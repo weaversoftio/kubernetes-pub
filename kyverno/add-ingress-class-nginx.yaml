@@ -1,0 +1,23 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-ingress-class-nginx
+  annotations:
+    policies.kyverno.io/title: Add IngressClass nginx
+    policies.kyverno.io/description: |
+      Automatically adds ingressClassName: nginx to all Ingress resources
+      that don't have one specified.
+spec:
+  background: true
+  rules:
+  - name: add-nginx-class
+    match:
+      any:
+      - resources:
+          kinds:
+          - Ingress
+    mutate:
+      patchStrategicMerge:
+        spec:
+          ingressClassName: nginx
+

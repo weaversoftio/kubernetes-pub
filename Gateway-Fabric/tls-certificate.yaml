@@ -1,0 +1,39 @@
+# TLS Certificate Secret
+# For production: Replace with real certificate and key
+# For development/testing: Use self-signed certificate
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: samsung-tls-certificate
+  namespace: nginx-gateway
+type: kubernetes.io/tls
+data:
+  # NOTE: These are placeholders - YOU NEED TO REPLACE THEM
+  # Generate with: 
+  #   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  #     -keyout tls.key -out tls.crt \
+  #     -subj "/CN=*.samsung.local/O=Samsung"
+  #   kubectl create secret tls samsung-tls-certificate \
+  #     --cert=tls.crt --key=tls.key -n nginx-gateway --dry-run=client -o yaml
+  
+  # Base64 encoded certificate (tls.crt)
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCi4uLgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t
+  
+  # Base64 encoded private key (tls.key)
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCi4uLgotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0t
+
+---
+# Instructions:
+# 1. If you have a real certificate from a Certificate Authority (CA):
+#    - Get tls.crt and tls.key files from your security team
+#    - Create the secret: kubectl create secret tls samsung-tls-certificate --cert=tls.crt --key=tls.key -n nginx-gateway
+#
+# 2. For testing with self-signed certificate:
+#    - Generate: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=*.samsung.local/O=Samsung"
+#    - Create: kubectl create secret tls samsung-tls-certificate --cert=tls.crt --key=tls.key -n nginx-gateway
+#
+# 3. For automatic certificate management (recommended):
+#    - Install cert-manager in your cluster
+#    - Use Certificate resource to auto-generate certificates
+

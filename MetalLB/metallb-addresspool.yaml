@@ -1,0 +1,17 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: dcs-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.33.154-192.168.33.160  # טווח IPs (154=Traefik, 156=Ingress-NGINX)
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: dcs-l2
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - dcs-pool
