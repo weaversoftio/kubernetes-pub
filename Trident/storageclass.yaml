@@ -1,0 +1,41 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: netapp-storage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"  # Set as default StorageClass
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  fsType: "ext4"
+  provisioningType: "thin"
+  # Optional: specify which backend to use
+  # selector: "storagePools=pool1,pool2"
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+
+---
+# StorageClass Configuration Notes:
+#
+# This StorageClass is set as DEFAULT for the cluster.
+# Any PVC without a storageClassName will use this.
+#
+# Key features:
+# - allowVolumeExpansion: true  → Allows growing PVCs after creation
+# - reclaimPolicy: Delete       → Volumes deleted when PVC is deleted
+# - volumeBindingMode: Immediate → Volume created immediately when PVC is created
+#
+# Optional parameters you can add:
+# - snapshotPolicy: "daily"
+# - snapshotReserve: "10"
+# - spaceReserve: "none"
+# - encryption: "true"
+# - tieringPolicy: "auto|snapshot-only|none"
+#
+# To create additional StorageClasses with different policies:
+# 1. Copy this file
+# 2. Change the name (e.g., netapp-storage-gold)
+# 3. Remove the is-default-class annotation
+# 4. Adjust parameters as needed
+

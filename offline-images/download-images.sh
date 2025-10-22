@@ -17,10 +17,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGES_LIST="${SCRIPT_DIR}/images-list.txt"
 OUTPUT_DIR="${SCRIPT_DIR}/images-tar"
 
-echo -e "${BLUE}╔════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║  Offline Images Download Script           ║${NC}"
-echo -e "${BLUE}║  4 Tools: Headlamp, Kyverno, MetalLB, NGINX║${NC}"
-echo -e "${BLUE}╚════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}╔════════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║  Offline Images Download Script                   ║${NC}"
+echo -e "${BLUE}║  5 Tools: Headlamp, Kyverno, MetalLB, NGF, Trident║${NC}"
+echo -e "${BLUE}╚════════════════════════════════════════════════════╝${NC}"
 echo ""
 
 # Checks

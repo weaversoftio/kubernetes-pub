@@ -1,0 +1,25 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentOrchestrator
+metadata:
+  name: trident
+spec:
+  debug: false
+  namespace: trident
+  
+  # Trident images
+  # ⚠️ For offline/air-gapped: Change to your private registry
+  # Example: private-registry.company.com/netapp/trident:24.10.0
+  tridentImage: docker.io/netapp/trident:24.10.0
+  autosupportImage: docker.io/netapp/trident-autosupport:24.10.0
+  
+  # Image pull policy
+  imagePullPolicy: IfNotPresent
+  
+  # Enable IPv6 (optional)
+  # enableIPv6: false
+  
+  # Image pull secrets (if using private registry)
+  # ⚠️ For private registry: Uncomment and add your secret name
+  # imagePullSecrets:
+  #   - private-registry-secret
+
