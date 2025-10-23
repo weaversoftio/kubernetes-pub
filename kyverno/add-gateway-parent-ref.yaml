@@ -4,10 +4,15 @@ metadata:
   name: add-gateway-parent-ref
   annotations:
     policies.kyverno.io/title: Add Gateway Parent Reference
+    policies.kyverno.io/category: Convention over Configuration
+    policies.kyverno.io/severity: low
     policies.kyverno.io/description: |
       Automatically adds parentRefs to samsung-gateway-fabric Gateway
       for HTTPRoute resources that don't have one specified.
       Works with NGINX Gateway Fabric (Gateway API).
+      
+      This is a safety policy that ensures all HTTPRoutes are connected
+      to the Gateway, even if created manually or by other tools.
 spec:
   background: true
   rules:
@@ -17,10 +22,17 @@ spec:
       - resources:
           kinds:
           - HTTPRoute
+    preconditions:
+      all:
+      # Only add if parentRefs is not already set
+      - key: "{{request.object.spec.parentRefs[] | length(@)}}"
+        operator: Equals
+        value: 0
     mutate:
       patchStrategicMerge:
         spec:
           parentRefs:
           - name: samsung-gateway-fabric
             namespace: nginx-gateway
+            kind: Gateway
 

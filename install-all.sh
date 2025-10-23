@@ -7,7 +7,7 @@
 # This script installs all components automatically:
 # 1. MetalLB - Load Balancer
 # 2. NGINX Gateway Fabric - Ingress Gateway
-# 3. Kyverno - Policy Engine
+# 3. Kyverno - Convention over Configuration (CoC) Policy Engine
 # 4. Headlamp - Kubernetes Dashboard
 # 5. DEX - OIDC Authentication (optional)
 # 6. Trident - NetApp Storage CSI Driver (optional)
@@ -133,7 +133,7 @@ confirm_installation() {
     echo -e "${YELLOW}This will install the following components:${NC}"
     echo "  1. MetalLB (Load Balancer)"
     echo "  2. NGINX Gateway Fabric (Ingress Gateway)"
-    echo "  3. Kyverno (Policy Engine)"
+    echo "  3. Kyverno (CoC - Auto HTTPRoute Generation)"
     echo "  4. Headlamp (Dashboard)"
     
     # Check if DEX is enabled
@@ -196,7 +196,7 @@ main() {
     echo "This script will install a complete Kubernetes platform with:"
     echo "  • MetalLB for LoadBalancer services"
     echo "  • NGINX Gateway Fabric for ingress"
-    echo "  • Kyverno for policy management"
+    echo "  • Kyverno for auto-generating HTTPRoute (Convention over Configuration)"
     echo "  • Headlamp for cluster management"
     echo "  • DEX for authentication (optional)"
     echo "  • Trident for NetApp storage (optional)"

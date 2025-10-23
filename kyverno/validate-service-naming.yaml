@@ -1,0 +1,41 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: validate-service-naming
+  annotations:
+    policies.kyverno.io/title: Validate Service Naming Convention
+    policies.kyverno.io/category: Convention over Configuration
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: |
+      Enforces naming convention for Services that will be exposed externally.
+      Service names must be lowercase alphanumeric with hyphens only.
+      This ensures DNS-compatible names for auto-generated HTTPRoutes.
+      
+      Valid examples:
+        - my-app
+        - api-service
+        - web-frontend
+      
+      Invalid examples:
+        - My-App (uppercase)
+        - my_app (underscore)
+        - my.app (dots)
+spec:
+  validationFailureAction: Audit
+  background: false
+  rules:
+  - name: check-service-name
+    match:
+      any:
+      - resources:
+          kinds:
+          - Service
+          annotations:
+            expose: "true"
+    validate:
+      message: "Service name must be lowercase alphanumeric, start and end with an alphanumeric character, and can contain hyphens. (e.g., my-app-service)"
+      pattern:
+        metadata:
+          name: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+
+

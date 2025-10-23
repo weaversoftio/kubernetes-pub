@@ -8,7 +8,7 @@ This repository contains automated installation scripts and configurations for d
 
 - **MetalLB** - Load Balancer for bare metal clusters
 - **NGINX Gateway Fabric** - Modern Gateway API implementation with TLS
-- **Kyverno** - Policy engine for security and automation
+- **Kyverno** - Convention over Configuration (CoC) - Auto-generates HTTPRoute from Services
 - **Headlamp** - Modern Kubernetes dashboard
 - **DEX** - OIDC authentication provider (optional)
 - **Trident** - NetApp storage CSI driver (optional)
@@ -16,7 +16,7 @@ This repository contains automated installation scripts and configurations for d
 ## 🎯 Features
 
 ✅ **One-Click Installation** - Install entire stack with a single command  
-✅ **Centralized Configuration** - Edit one file (`cluster-config.yaml`) for all settings  
+✅ **Configuration Reference** - `cluster-config.yaml` documents all settings and which files to edit  
 ✅ **Production Ready** - Secure defaults with TLS, RBAC, and authentication  
 ✅ **Offline Support** - Air-gapped installation with pre-downloaded images  
 ✅ **Idempotent** - Safe to run multiple times  
@@ -28,7 +28,7 @@ This repository contains automated installation scripts and configurations for d
 
 ```
 samsung-kubernetes-pub/
-├── cluster-config.yaml          # ⚙️ Main configuration file
+├── cluster-config.yaml          # 📖 Configuration reference/documentation
 ├── install-all.sh              # 🚀 Complete installation script
 ├── uninstall-all.sh            # 🗑️ Complete removal script
 ├── README.md                   # 📖 This file
@@ -91,25 +91,28 @@ git clone <repository-url>
 cd samsung-kubernetes-pub
 ```
 
-#### 2️⃣ Edit Configuration
+#### 2️⃣ Review Configuration Reference
 
-Edit `cluster-config.yaml` with your environment settings:
+**Important:** `cluster-config.yaml` is a **reference documentation file only**. 
+
+To customize your deployment:
+
+1. **Read** `cluster-config.yaml` to understand available options
+2. **Edit** the actual YAML files in each component directory
+3. Each section in `cluster-config.yaml` includes `📝` notes showing which files to edit
+
+**Example - Changing MetalLB IP range:**
 
 ```bash
-vim cluster-config.yaml
-```
+# 1. Read the reference
+vim cluster-config.yaml  # See metallb.ip_range setting
 
-**Key settings to change:**
+# 2. Edit the actual file
+vim MetalLB/metallb-addresspool.yaml  # Change the IP range here
 
-```yaml
-cluster:
-  domain: "samsung.local"        # ← Your domain
-
-metallb:
-  ip_range: "192.168.33.154-192.168.33.160"  # ← Your IP range
-
-gateway:
-  loadbalancer_ip: "192.168.33.157"  # ← Gateway IP (must be in range)
+# 3. The file lists which YAML to edit:
+#    📝 לשינוי ערכים אלה:
+#       ערוך את הקובץ: MetalLB/metallb-addresspool.yaml
 ```
 
 #### 3️⃣ Run Installation
@@ -155,29 +158,48 @@ kubectl get secret -n headlamp -o jsonpath='{.data.token}' $(kubectl get secret 
 
 ## 🛠️ Individual Component Installation
 
-You can also install components individually:
+You can also install or update components individually:
 
 ```bash
-# Install only MetalLB
+# Install/update only MetalLB
 cd MetalLB
+vim metallb-addresspool.yaml  # Edit configuration if needed
 ./install.sh
 
-# Install only Gateway Fabric
+# Install/update only Gateway Fabric
 cd Gateway-Fabric
+vim gateway.yaml  # Edit configuration if needed
 ./install.sh
 
-# Install only Headlamp
+# Install/update only Headlamp
 cd Headlamp
+vim headlamp-httproute-fabric.yaml  # Edit hostname if needed
 ./install.sh
 ```
 
-Each component reads from the main `cluster-config.yaml` file.
+**Note:** Each component uses its own YAML configuration files. Use `cluster-config.yaml` as a reference to see what can be configured and which files to edit.
 
 ---
 
 ## ⚙️ Configuration Guide
 
-### cluster-config.yaml Structure
+### Understanding cluster-config.yaml
+
+**⚠️ Important:** `cluster-config.yaml` is a **reference/documentation file**, not a live configuration that gets read by install scripts.
+
+**Purpose:**
+- 📖 Documents all available configuration options
+- 📝 Shows which files to edit for each setting (look for `📝 לשינוי ערכים אלה` notes)
+- 🗺️ Provides a map of the entire platform configuration
+
+**How to use it:**
+
+1. **Read** the relevant section in `cluster-config.yaml`
+2. **Find** the `📝` note that tells you which YAML file to edit
+3. **Edit** that file in the component's directory
+4. **Run** the installation script
+
+### Configuration Structure Reference
 
 ```yaml
 # General cluster settings
@@ -186,21 +208,18 @@ cluster:
 
 # MetalLB configuration
 metallb:
-  namespace: "metallb-system"
   ip_range: "192.168.33.154-192.168.33.160"
+  # 📝 To change: Edit MetalLB/metallb-addresspool.yaml
 
 # Gateway configuration
 gateway:
-  namespace: "nginx-gateway"
   loadbalancer_ip: "192.168.33.157"
-  tls_secret_name: "samsung-tls-certificate"
+  # 📝 To change: Edit Gateway-Fabric/gateway.yaml
 
 # Headlamp configuration
 headlamp:
-  namespace: "headlamp"
   hostname: "headlamp.samsung.local"
-  oidc:
-    enabled: false  # Set to true for DEX integration
+  # 📝 To change: Edit Headlamp/headlamp-httproute-fabric.yaml
 
 # DEX configuration (optional)
 dex:
@@ -264,15 +283,20 @@ See `cluster-config.yaml` for all available options and documentation.
 
 ### Kyverno
 
-**Purpose:** Policy engine for Kubernetes
+**Purpose:** Convention over Configuration (CoC) policy controller
 
 **What it does:**
-- Automatic policy enforcement
-- Resource mutation
-- Validation and generation
+- Auto-generates HTTPRoute from Services with annotation `expose: "true"`
+- Enforces DNS-compatible naming conventions
+- Auto-adds Gateway reference to HTTPRoutes
+- Creates hostname: `{service}-{namespace}.samsung.local`
 
 **Included Policies:**
-- Auto-add `ingressClassName: nginx` to Ingress resources
+- `generate-httproute-from-service` - Auto-creates HTTPRoute
+- `validate-service-naming` - Enforces naming convention
+- `add-gateway-parent-ref` - Adds Gateway reference
+
+**Benefit:** Developers don't need to write HTTPRoute manually!
 
 ### Headlamp
 

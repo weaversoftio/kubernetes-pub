@@ -1,11 +1,15 @@
 # =====================================================
-# Samsung Kubernetes Platform - Cluster Configuration
+# Samsung Kubernetes Platform - Configuration Reference
 # =====================================================
 # 
+# ⚠️ קובץ זה הוא תיעוד ומדריך בלבד (Reference Documentation)
+# 
 # הוראות שימוש:
-# 1. ערוך את הקובץ הזה לפי הצרכים של הלקוח
-# 2. הרץ: ./install-all.sh
-# 3. כל ההתקנות יבוצעו אוטומטית עם הערכים שהגדרת
+# 1. קרא את הקובץ הזה כדי להבין אילו ערכים ניתן לשנות
+# 2. עבור לכל תיקייה (MetalLB, Gateway-Fabric, וכו') וערוך את קבצי ה-YAML
+# 3. לאחר העריכה הרץ: ./install-all.sh (או install.sh בכל תיקייה בנפרד)
+#
+# 💡 לא ניתן לשנות רק קובץ זה - צריך לערוך את הקבצים בכל תיקייה!
 #
 # =====================================================
 
@@ -35,6 +39,9 @@ metallb:
   
   # Helm chart version (leave as-is unless upgrading)
   chart_version: "0.15.2"
+  
+  # 📝 לשינוי ערכים אלה:
+  #    ערוך את הקובץ: MetalLB/metallb-addresspool.yaml
 
 
 # ========== Gateway Fabric - Ingress Gateway ==========
@@ -57,19 +64,43 @@ gateway:
   
   # TLS Certificate secret name
   tls_secret_name: "samsung-tls-certificate"
+  
+  # 📝 לשינוי ערכים אלה:
+  #    ערוך את הקובץ: Gateway-Fabric/gateway.yaml
+  #    ושנה את domain ב-install.sh (שורות 23-24) אם צריך domain אחר
 
 
-# ========== Kyverno - Policy Engine ==========
+# ========== Kyverno - Convention over Configuration (CoC) Policy Engine ==========
 kyverno:
   # Namespace for Kyverno
   namespace: "kyverno"
   
-  # Enable policies
+  # Convention over Configuration Policies
+  # These policies automate HTTPRoute creation and enforce naming conventions
   policies:
-    # Auto-add Gateway parentRef to HTTPRoute resources
-    # This policy automatically adds samsung-gateway-fabric as parent
-    # to HTTPRoute resources that don't have a parentRef specified
+    # 1. Auto-generate HTTPRoute from Service
+    # When a Service has annotation expose: "true", automatically creates HTTPRoute
+    # with hostname: {service-name}-{namespace}.samsung.local
+    auto_generate_httproute: true
+    
+    # 2. Validate Service naming convention
+    # Enforces DNS-compatible names (lowercase, hyphens only)
+    # Prevents invalid names like: My-App, my_app, my.app
+    validate_service_naming: true
+    
+    # 3. Auto-add Gateway parentRef to HTTPRoute
+    # Safety policy: adds samsung-gateway-fabric as parent if not specified
     auto_gateway_parent: true
+  
+  # Cluster domain for auto-generated hostnames
+  # Format: {service}-{namespace}.{cluster_domain}
+  cluster_domain: "samsung.local"
+  
+  # 📝 לשינוי ערכים אלה:
+  #    ערוך את הקבצים:
+  #    - kyverno/generate-httproute-from-service.yaml (שורות 51-52, 55)
+  #    - kyverno/add-gateway-parent-ref.yaml (שורות 35-36)
+  #    - kyverno/validate-service-naming.yaml (regex pattern)
 
 
 # ========== Headlamp - Kubernetes Dashboard ==========
@@ -102,6 +133,12 @@ headlamp:
     
     # OIDC client ID
     client_id: "headlamp"
+  
+  # 📝 לשינוי ערכים אלה:
+  #    ערוך את הקבצים:
+  #    - Headlamp/headlamp-httproute-fabric.yaml (hostname)
+  #    - Headlamp/headlamp-admin-user.yaml (email, service account)
+  #    - Headlamp/headlamp-values.yaml (OIDC settings)
     
     # OIDC client secret
     client_secret: "headlamp-secret-change-me"
@@ -139,6 +176,12 @@ dex:
   
   # Helm chart version
   chart_version: "0.18.0"
+  
+  # 📝 לשינוי ערכים אלה:
+  #    ערוך את הקבצים:
+  #    - DEX/dex-httproute.yaml (hostname)
+  #    - DEX/dex-values.yaml (users, LDAP, issuer)
+  #    - DEX/rbac-admin-user.yaml (admin email)
 
 
 # ========== Trident - NetApp Storage CSI Driver (Optional) ==========
@@ -214,6 +257,13 @@ trident:
   
   # Helm chart version
   chart_version: "100.2410.0"
+  
+  # 📝 לשינוי ערכים אלה:
+  #    ערוך את הקבצים:
+  #    - Trident/secret-template.yaml (NetApp credentials)
+  #    - Trident/backend-ontap-nas.yaml (NetApp backend config)
+  #    - Trident/storageclass.yaml (storage class settings)
+  #    - Trident/trident-orchestrator.yaml (namespace, version)
 
 
 # ========== Advanced Settings ==========
@@ -248,4 +298,24 @@ offline:
   
   # Load images before installation
   load_images: false
+
+
+# =====================================================
+# 💡 תזכורת חשובה!
+# =====================================================
+# 
+# קובץ זה הוא **רפרנס בלבד** - הוא מתעד את כל האפשרויות והערכים.
+# 
+# כדי לשנות ערכים בפועל:
+# 1. מצא את הסעיף הרלוונטי למעלה (MetalLB, Gateway, Kyverno, וכו')
+# 2. קרא את ההערה "📝 לשינוי ערכים אלה" לראות אילו קבצים לערוך
+# 3. עבור לתיקייה המתאימה וערוך את קובץ ה-YAML הרלוונטי
+# 4. הרץ ./install-all.sh או ./[component]/install.sh
+# 
+# דוגמה:
+#   רוצה לשנות את ה-IP range של MetalLB?
+#   → ערוך את: MetalLB/metallb-addresspool.yaml
+#   → הרץ: cd MetalLB && ./install.sh
+# 
+# =====================================================
 
