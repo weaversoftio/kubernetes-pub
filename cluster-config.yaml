@@ -1,0 +1,251 @@
+# =====================================================
+# Samsung Kubernetes Platform - Cluster Configuration
+# =====================================================
+# 
+# הוראות שימוש:
+# 1. ערוך את הקובץ הזה לפי הצרכים של הלקוח
+# 2. הרץ: ./install-all.sh
+# 3. כל ההתקנות יבוצעו אוטומטית עם הערכים שהגדרת
+#
+# =====================================================
+
+# ========== הגדרות כלליות ==========
+cluster:
+  # Domain name for all services (*.domain will be used)
+  # דוגמה: samsung.local, company.local, client.local
+  domain: "samsung.local"
+  
+  # Kubernetes context (leave empty for current context)
+  # אם ריק - ישתמש ב-context הנוכחי
+  context: ""
+
+
+# ========== MetalLB - Load Balancer ==========
+metallb:
+  # Namespace for MetalLB
+  namespace: "metallb-system"
+  
+  # IP address pool name
+  pool_name: "dcs-pool"
+  
+  # IP range for LoadBalancer services
+  # פורמט: START_IP-END_IP
+  # דוגמה: 192.168.1.100-192.168.1.200
+  ip_range: "192.168.33.154-192.168.33.160"
+  
+  # Helm chart version (leave as-is unless upgrading)
+  chart_version: "0.15.2"
+
+
+# ========== Gateway Fabric - Ingress Gateway ==========
+gateway:
+  # Namespace for NGINX Gateway Fabric
+  namespace: "nginx-gateway"
+  
+  # Gateway name
+  name: "samsung-gateway-fabric"
+  
+  # LoadBalancer IP for the Gateway
+  # חייב להיות בתוך ה-IP range של MetalLB
+  loadbalancer_ip: "192.168.33.157"
+  
+  # Gateway Class name
+  gateway_class: "nginx"
+  
+  # Helm chart version
+  chart_version: "1.5.1"
+  
+  # TLS Certificate secret name
+  tls_secret_name: "samsung-tls-certificate"
+
+
+# ========== Kyverno - Policy Engine ==========
+kyverno:
+  # Namespace for Kyverno
+  namespace: "kyverno"
+  
+  # Enable policies
+  policies:
+    # Auto-add Gateway parentRef to HTTPRoute resources
+    # This policy automatically adds samsung-gateway-fabric as parent
+    # to HTTPRoute resources that don't have a parentRef specified
+    auto_gateway_parent: true
+
+
+# ========== Headlamp - Kubernetes Dashboard ==========
+headlamp:
+  # Namespace for Headlamp
+  namespace: "headlamp"
+  
+  # Hostname for Headlamp (without https://)
+  # דוגמה: headlamp.samsung.local
+  hostname: "headlamp.samsung.local"
+  
+  # Admin user configuration
+  admin:
+    # Admin user email (used in RBAC)
+    email: "admin@samsung.local"
+    
+    # Admin service account name
+    service_account: "headlamp-admin"
+  
+  # Helm chart version
+  chart_version: "0.34.0"
+  
+  # OIDC Configuration (for DEX integration)
+  oidc:
+    # Enable OIDC authentication
+    enabled: false
+    
+    # OIDC issuer URL (DEX URL)
+    issuer_url: "https://dex.samsung.local"
+    
+    # OIDC client ID
+    client_id: "headlamp"
+    
+    # OIDC client secret
+    client_secret: "headlamp-secret-change-me"
+
+
+# ========== DEX - OIDC Authentication (Optional) ==========
+dex:
+  # Enable DEX installation
+  enabled: false
+  
+  # Namespace for DEX
+  namespace: "dex"
+  
+  # Hostname for DEX (without https://)
+  hostname: "dex.samsung.local"
+  
+  # Static users (for testing)
+  static_users:
+    - email: "admin@samsung.local"
+      # Password hash - generated with: echo "admin" | htpasswd -BinC 10 admin | cut -d: -f2
+      password_hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+      username: "admin"
+      
+    - email: "user@samsung.local"
+      password_hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+      username: "user"
+  
+  # LDAP/AD Configuration (for production)
+  ldap:
+    enabled: false
+    host: "ldap.samsung.local:389"
+    bind_dn: "cn=admin,dc=samsung,dc=local"
+    bind_password: "password"
+    base_dn: "dc=samsung,dc=local"
+  
+  # Helm chart version
+  chart_version: "0.18.0"
+
+
+# ========== Trident - NetApp Storage CSI Driver (Optional) ==========
+trident:
+  # Enable Trident installation
+  enabled: false
+  
+  # Namespace for Trident
+  namespace: "trident"
+  
+  # Trident version (must match the chart version)
+  version: "24.10.0"
+  
+  # NetApp ONTAP Backend Configuration
+  backend:
+    # Backend name
+    name: "ontap-nas-backend"
+    
+    # Storage driver (ontap-nas, ontap-san, etc.)
+    driver: "ontap-nas"
+    
+    # NetApp Management LIF IP
+    # ⚠️ CHANGE ME: Your NetApp cluster management IP
+    management_lif: "192.168.1.100"
+    
+    # NetApp Data LIF IP
+    # ⚠️ CHANGE ME: Your NetApp data network IP
+    data_lif: "192.168.1.101"
+    
+    # Storage Virtual Machine (SVM) name
+    # ⚠️ CHANGE ME: Your SVM name
+    svm: "svm_name"
+    
+    # NetApp credentials (will be created as Kubernetes secret)
+    # ⚠️ CHANGE ME: Use secure credentials in production
+    credentials:
+      username: "admin"
+      password: "password"
+    
+    # Storage prefix for volumes
+    storage_prefix: "trident_"
+    
+    # NFS mount options
+    nfs_mount_options: "nfsvers=4.1"
+  
+  # StorageClass configuration
+  storageclass:
+    # StorageClass name
+    name: "netapp-storage"
+    
+    # Set as default StorageClass
+    is_default: true
+    
+    # Allow volume expansion
+    allow_volume_expansion: true
+    
+    # Reclaim policy (Delete or Retain)
+    reclaim_policy: "Delete"
+  
+  # Image configuration (for offline/air-gapped environments)
+  images:
+    # Trident image
+    trident: "docker.io/netapp/trident:24.10.0"
+    
+    # Autosupport image
+    autosupport: "docker.io/netapp/trident-autosupport:24.10.0"
+    
+    # Image pull policy
+    pull_policy: "IfNotPresent"
+    
+    # Image pull secrets (for private registry)
+    # pull_secrets: []
+  
+  # Helm chart version
+  chart_version: "100.2410.0"
+
+
+# ========== Advanced Settings ==========
+advanced:
+  # Skip pre-installation checks
+  skip_checks: false
+  
+  # Verbose output during installation
+  verbose: false
+  
+  # Dry-run mode (preview commands without executing)
+  dry_run: false
+  
+  # Install components in specific order
+  # אם false, ישאל איזה components להתקין
+  install_all: true
+  
+  # Components to install (if install_all is false)
+  components:
+    - metallb
+    - gateway
+    - kyverno
+    - headlamp
+    # - dex      # uncomment to install DEX
+    # - trident  # uncomment to install Trident
+
+
+# ========== Offline Installation ==========
+offline:
+  # Use offline images (from offline-images/ directory)
+  enabled: false
+  
+  # Load images before installation
+  load_images: false
+
