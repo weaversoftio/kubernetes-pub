@@ -32,3 +32,4 @@ echo ""
 echo "IMPORTANT: Update kube-apiserver with OIDC flags!"
 echo "See: $SCRIPT_DIR/kube-apiserver-oidc-patch.yaml"
 echo ""
+

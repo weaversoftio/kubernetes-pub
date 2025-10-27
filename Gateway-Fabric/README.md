@@ -140,3 +140,4 @@ kubectl get ipaddresspool -n metallb-system
 - [NGINX Gateway Fabric Documentation](https://docs.nginx.com/nginx-gateway-fabric/)
 - [Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/)
 
+

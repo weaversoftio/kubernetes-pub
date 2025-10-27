@@ -65,3 +65,4 @@ echo "Verify:"
 echo "  kubectl get pods -n kyverno"
 echo "  kubectl get clusterpolicy"
 echo ""
+

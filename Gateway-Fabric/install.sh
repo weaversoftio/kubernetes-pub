@@ -48,3 +48,4 @@ echo "  kubectl get gateway -n nginx-gateway"
 echo "  kubectl get svc -n nginx-gateway"
 echo "  kubectl get gatewayclass"
 echo ""
+

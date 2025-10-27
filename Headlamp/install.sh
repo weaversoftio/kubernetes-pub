@@ -31,3 +31,4 @@ echo ""
 echo "Get admin token:"
 echo "  kubectl get secret -n headlamp \$(kubectl get secret -n headlamp | grep headlamp-admin-token | awk '{print \$1}') -o jsonpath='{.data.token}' | base64 -d"
 echo ""
+

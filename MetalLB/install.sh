@@ -27,3 +27,4 @@ echo "Verify:"
 echo "  kubectl get pods -n metallb-system"
 echo "  kubectl get ipaddresspool -n metallb-system"
 echo ""
+
