@@ -91,28 +91,28 @@ git clone <repository-url>
 cd samsung-kubernetes-pub
 ```
 
-#### 2️⃣ Review Configuration Reference
+#### 2️⃣ Configure Your Deployment
 
-**Important:** `cluster-config.yaml` is a **reference documentation file only**. 
+**Important:** You need to configure the following settings before installation:
 
-To customize your deployment:
+**📋 Quick Configuration Checklist:**
 
-1. **Read** `cluster-config.yaml` to understand available options
-2. **Edit** the actual YAML files in each component directory
-3. Each section in `cluster-config.yaml` includes `📝` notes showing which files to edit
+1. **MetalLB IP Range** → Edit `MetalLB/metallb-addresspool.yaml` (line 21)
+2. **Domain Name** → Edit `Gateway-Fabric/gateway.yaml` (lines 32, 41)
+3. **LoadBalancer IP** → Edit `Gateway-Fabric/values.yaml` (line 43)
+4. **Headlamp Hostname** → Edit `Headlamp/headlamp-httproute-fabric.yaml` (line 32)
+5. **DEX Hostname** (optional) → Edit `DEX/dex-httproute.yaml` (line 36) and `DEX/dex-values.yaml` (lines 13, 59)
+6. **Kyverno Domain** (for auto-generated HTTPRoutes) → Edit `kyverno/generate-httproute-from-service.yaml` (line 62)
+7. **Trident** (optional) → Edit `Trident/backend-ontap-nas.yaml` (lines 12-14)
+
+**💡 Each file has clear ⚙️ CONFIGURATION REQUIRED comments showing exactly what to change!**
 
 **Example - Changing MetalLB IP range:**
 
 ```bash
-# 1. Read the reference
-vim cluster-config.yaml  # See metallb.ip_range setting
-
-# 2. Edit the actual file
-vim MetalLB/metallb-addresspool.yaml  # Change the IP range here
-
-# 3. The file lists which YAML to edit:
-#    📝 לשינוי ערכים אלה:
-#       ערוך את הקובץ: MetalLB/metallb-addresspool.yaml
+vim MetalLB/metallb-addresspool.yaml
+# Look for line 21: - 192.168.33.154-192.168.33.160
+# Change to your network's IP range
 ```
 
 #### 3️⃣ Run Installation

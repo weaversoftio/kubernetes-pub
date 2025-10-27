@@ -1,3 +1,20 @@
+# =====================================================
+# Kyverno: Add Gateway Parent Reference
+# =====================================================
+# 
+# ⚙️ CONFIGURATION REQUIRED - Change Gateway name/namespace below
+# 
+# This policy automatically adds parentRefs to the Gateway for 
+# HTTPRoute resources that don't have one specified.
+#
+# 📝 WHAT TO CHANGE:
+#   Line 40: Change "samsung-gateway-fabric" to your Gateway name
+#   Line 41: Change "nginx-gateway" to your Gateway namespace
+#
+# ⚠️ Leave as-is if using default Samsung Gateway
+#
+# =====================================================
+
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -32,7 +49,8 @@ spec:
       patchStrategicMerge:
         spec:
           parentRefs:
-          - name: samsung-gateway-fabric
-            namespace: nginx-gateway
+          # ⚙️ CHANGE THIS: Gateway name and namespace (or leave default)
+          - name: samsung-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
+            namespace: nginx-gateway       # ← CHANGE THIS LINE (or leave as-is)
             kind: Gateway
 

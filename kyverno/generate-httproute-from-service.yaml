@@ -1,3 +1,23 @@
+# =====================================================
+# Kyverno: Auto-Generate HTTPRoute from Service
+# =====================================================
+# 
+# ⚙️ CONFIGURATION REQUIRED - Change domain below
+# 
+# This policy automatically generates HTTPRoute for Services with 
+# annotation 'expose: "true"'.
+#
+# 📝 WHAT TO CHANGE:
+#   Line 56: Change "samsung-gateway-fabric" to your Gateway name (or leave if default)
+#   Line 57: Change "nginx-gateway" to your Gateway namespace (or leave if default)
+#   Line 62: Change "samsung.local" to your domain
+#
+# 📋 Examples for line 62:
+#   - "{{request.object.metadata.name}}-{{request.namespace}}.yourdomain.com"
+#   - "{{request.object.metadata.name}}-{{request.namespace}}.company.local"
+#
+# =====================================================
+
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -48,11 +68,13 @@ spec:
             kyverno.io/generated-by: generate-httproute-from-service
         spec:
           parentRefs:
-          - name: samsung-gateway-fabric
-            namespace: nginx-gateway
+          # ⚙️ CHANGE THIS: Gateway name and namespace (or leave default)
+          - name: samsung-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
+            namespace: nginx-gateway       # ← CHANGE THIS LINE (or leave as-is)
             kind: Gateway
           hostnames:
-          - "{{request.object.metadata.name}}-{{request.namespace}}.samsung.local"
+          # ⚙️ CHANGE THIS: Replace "samsung.local" with your domain
+          - "{{request.object.metadata.name}}-{{request.namespace}}.samsung.local"  # ← CHANGE THIS LINE
           rules:
           - matches:
             - path:

@@ -1,7 +1,24 @@
-# DEX HTTPRoute
-# Samsung Kubernetes Platform
-# Routes traffic from Gateway to DEX
----
+# =====================================================
+# DEX HTTPRoute Configuration
+# =====================================================
+# 
+# ⚙️ CONFIGURATION REQUIRED - Change the hostname below
+# 
+# This file defines how to access DEX OIDC provider through the Gateway.
+#
+# 📝 WHAT TO CHANGE:
+#   Line 23: Change "dex.samsung.local" to match your domain
+#
+# 📋 Examples:
+#   dex.yourdomain.com
+#   auth.company.local
+#   oidc.client.internal
+#
+# ⚠️ This hostname will be used for OIDC authentication!
+#    Must match the issuer URL in dex-values.yaml (line 8)
+#
+# =====================================================
+
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -13,7 +30,8 @@ spec:
     namespace: nginx-gateway
     kind: Gateway
   hostnames:
-  - "dex.samsung.local"
+  # ⚙️ CHANGE THIS: Replace with your DEX hostname
+  - "dex.samsung.local"  # ← CHANGE THIS LINE
   rules:
   - matches:
     - path:

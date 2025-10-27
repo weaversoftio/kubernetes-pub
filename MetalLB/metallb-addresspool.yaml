@@ -1,3 +1,25 @@
+# =====================================================
+# MetalLB IP Address Pool Configuration
+# =====================================================
+# 
+# ⚙️ CONFIGURATION REQUIRED - Change the IP range below
+# 
+# This file defines the IP address pool that MetalLB will use
+# to assign external IPs to LoadBalancer services.
+#
+# 📝 WHAT TO CHANGE:
+#   Line 8: Change the IP range to match your network
+#
+# 📋 Format: START_IP-END_IP
+#    Example: 192.168.1.100-192.168.1.200
+#
+# ⚠️ Make sure this IP range:
+#   - Is available on your network
+#   - Has enough IPs for your services
+#   - Doesn't conflict with existing IPs
+#
+# =====================================================
+
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -5,7 +27,8 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 192.168.33.154-192.168.33.160  # טווח IPs (154=Traefik, 156=Ingress-NGINX)
+    # ⚙️ CHANGE THIS: Replace with your network's IP range
+    - 192.168.33.154-192.168.33.160  # ← CHANGE THIS LINE
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement

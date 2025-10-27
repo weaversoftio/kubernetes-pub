@@ -1,10 +1,26 @@
+# =====================================================
+# DEX Helm Values Configuration
+# =====================================================
+# 
+# ⚙️ CONFIGURATION REQUIRED - Change settings below
+# 
+# 📝 WHAT TO CHANGE:
+#   Line 10: Change issuer URL to match your DEX hostname
+#   Line 46: Change redirect URI to match your Headlamp hostname
+#   Lines 24-30: Configure static users (passwords, emails)
+#
+# ⚠️ IMPORTANT: The issuer URL must match the DEX HTTPRoute!
+#
+# =====================================================
+
 # DEX Helm Values
 # Samsung Kubernetes Platform
 # Based on official Headlamp documentation
 
 # DEX configuration
 config:
-  issuer: https://dex.samsung.local
+  # ⚙️ CHANGE THIS: Must match DEX HTTPRoute hostname
+  issuer: https://dex.samsung.local  # ← CHANGE THIS LINE
   
   storage:
     type: kubernetes
@@ -36,7 +52,8 @@ config:
     name: Headlamp
     secret: headlamp-secret-change-me
     redirectURIs:
-    - 'https://headlamp.samsung.local/oidc-callback'
+    # ⚙️ CHANGE THIS: Must match Headlamp HTTPRoute hostname
+    - 'https://headlamp.samsung.local/oidc-callback'  # ← CHANGE THIS LINE
     - 'http://localhost:4466/oidc-callback'
   
   # Connectors - for future LDAP/AD integration
