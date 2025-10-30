@@ -115,6 +115,61 @@ metadata:
 
 ---
 
+## 🚀 Adding & Exposing Your Application (Developer Quickstart)
+
+To expose an app via the DCS platform:
+
+1. Create your Service and Deployment YAML (see example below).
+2. Add the annotation `expose: "true"` to your Service metadata.
+3. Service name **must be DNS-safe:** lowercase, hyphens, and numbers only.
+
+**Example:**
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  namespace: dev
+  annotations:
+    expose: "true"
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: myapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: myrepo/myapp:latest
+        ports:
+        - containerPort: 8080
+```
+
+**That's it!** The platform will automatically generate an HTTPRoute and expose your app externally at:
+  https://<service>-<namespace>.dcs.local
+
+> **Production Note:** In production environments, DNS records for all exposed app domains should be managed by DevOps/infrastructure, pointing each `*.dcs.local` host to the LoadBalancer IP. Developers never need to use /etc/hosts outside of local testing/first-time dev.
+
+> **Do NOT change core platform/infra configs for normal application deployments.**
+
+---
+
 ## ✅ 5. Pre-Deployment Developer Checklist
 
 - [ ] All relevant YAML files above are edited for your environment/domain/IP
