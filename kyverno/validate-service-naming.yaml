@@ -33,7 +33,7 @@ spec:
           annotations:
             expose: "true"
     validate:
-      message: "Service name must be lowercase alphanumeric, start and end with an alphanumeric character, and can contain hyphens. (e.g., my-app-service)"
+      message: "Service name must be lowercase alphanumeric, start and end with an alphanumeric character, and can contain hyphens. (e.g., my-app-service). Host format: {app}-{namespace}.{cluster}.{dns}"
       pattern:
         metadata:
           name: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"

@@ -26,12 +26,12 @@ metadata:
   namespace: dex
 spec:
   parentRefs:
-  - name: samsung-gateway-fabric
+  - name: dcs-gateway-fabric
     namespace: nginx-gateway
     kind: Gateway
   hostnames:
   # ⚙️ CHANGE THIS: Replace with your DEX hostname
-  - "dex.samsung.local"  # ← CHANGE THIS LINE
+  - "dex.dcs.local"  # ← CHANGE THIS LINE
   rules:
   - matches:
     - path:

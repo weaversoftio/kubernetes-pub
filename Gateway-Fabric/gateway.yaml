@@ -24,7 +24,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: samsung-gateway-fabric
+  name: dcs-gateway-fabric
   namespace: nginx-gateway
 spec:
   gatewayClassName: nginx
@@ -33,7 +33,7 @@ spec:
     protocol: HTTP
     port: 80
     # ⚙️ CHANGE THIS: Replace with your domain
-    hostname: "*.samsung.local"  # ← CHANGE THIS LINE
+    hostname: "*.dcs.local"  # ← CHANGE THIS LINE
     allowedRoutes:
       namespaces:
         from: All
@@ -42,12 +42,12 @@ spec:
     protocol: HTTPS
     port: 443
     # ⚙️ CHANGE THIS: Replace with your domain (must match line 19)
-    hostname: "*.samsung.local"  # ← CHANGE THIS LINE
+    hostname: "*.dcs.local"  # ← CHANGE THIS LINE
     tls:
       mode: Terminate
       certificateRefs:
       - kind: Secret
-        name: samsung-tls-certificate
+        name: dcs-tls-certificate
     allowedRoutes:
       namespaces:
         from: All

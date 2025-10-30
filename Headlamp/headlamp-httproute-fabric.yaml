@@ -26,12 +26,12 @@ metadata:
   namespace: headlamp
 spec:
   parentRefs:
-  - name: samsung-gateway-fabric
+  - name: dcs-gateway-fabric
     namespace: nginx-gateway
     kind: Gateway
   hostnames:
   # ⚙️ CHANGE THIS: Replace with your Headlamp hostname
-  - "headlamp.samsung.local"  # ← CHANGE THIS LINE
+  - "headlamp.dcs.local"  # ← CHANGE THIS LINE
   rules:
   - matches:
     - path:

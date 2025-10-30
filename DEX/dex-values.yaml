@@ -20,7 +20,7 @@
 # DEX configuration
 config:
   # ⚙️ CHANGE THIS: Must match DEX HTTPRoute hostname
-  issuer: https://dex.samsung.local  # ← CHANGE THIS LINE
+  issuer: https://dex.dcs.local  # ← CHANGE THIS LINE
   
   storage:
     type: kubernetes
@@ -33,12 +33,12 @@ config:
   # Static users for testing
   # To generate password hash: echo "password" | htpasswd -BinC 10 admin | cut -d: -f2
   staticPasswords:
-  - email: "admin@samsung.local"
-    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"  # password: admin
+  - email: "admin@dcs.local"
+    hash: "$2y$10$n4i0kg9bcpDZx.JW6rEVv.RFZV7lxbBmuv/o67ErYy8qmpv9ge2te"  # password: admin
     username: "admin"
     userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
-  - email: "user@samsung.local"
-    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"  # password: admin
+  - email: "user@dcs.local"
+    hash: "$2y$10$n4i0kg9bcpDZx.JW6rEVv.RFZV7lxbBmuv/o67ErYy8qmpv9ge2te"  # password: admin
     username: "user"
     userID: "41331323-6f44-45e6-b3b9-2c4b60c02be5"
   
@@ -53,7 +53,7 @@ config:
     secret: headlamp-secret-change-me
     redirectURIs:
     # ⚙️ CHANGE THIS: Must match Headlamp HTTPRoute hostname
-    - 'https://headlamp.samsung.local/oidc-callback'  # ← CHANGE THIS LINE
+    - 'https://headlamp.dcs.local/oidc-callback'  # ← CHANGE THIS LINE
     - 'http://localhost:4466/oidc-callback'
   
   # Connectors - for future LDAP/AD integration

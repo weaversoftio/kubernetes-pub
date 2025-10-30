@@ -136,8 +136,8 @@ The script will:
 Add the following to your `/etc/hosts` (or configure DNS):
 
 ```bash
-192.168.33.157  headlamp.samsung.local
-192.168.33.157  dex.samsung.local  # if DEX is enabled
+192.168.33.157  headlamp.dcs.local
+192.168.33.157  dex.dcs.local  # if DEX is enabled
 ```
 
 #### 5️⃣ Access Headlamp
@@ -145,7 +145,7 @@ Add the following to your `/etc/hosts` (or configure DNS):
 Open your browser:
 
 ```
-https://headlamp.samsung.local
+https://headlamp.dcs.local
 ```
 
 Get the admin token:
@@ -204,7 +204,7 @@ vim headlamp-httproute-fabric.yaml  # Edit hostname if needed
 ```yaml
 # General cluster settings
 cluster:
-  domain: "samsung.local"        # Base domain for all services
+  domain: "dcs.local"        # Base domain for all services
 
 # MetalLB configuration
 metallb:
@@ -218,13 +218,13 @@ gateway:
 
 # Headlamp configuration
 headlamp:
-  hostname: "headlamp.samsung.local"
+  hostname: "headlamp.dcs.local"
   # 📝 To change: Edit Headlamp/headlamp-httproute-fabric.yaml
 
 # DEX configuration (optional)
 dex:
   enabled: false  # Set to true to install DEX
-  hostname: "dex.samsung.local"
+  hostname: "dex.dcs.local"
 ```
 
 See `cluster-config.yaml` for all available options and documentation.
@@ -515,8 +515,8 @@ kubectl logs -n headlamp -l app.kubernetes.io/name=headlamp
 Add to `/etc/hosts`:
 
 ```bash
-echo "192.168.33.157  headlamp.samsung.local" | sudo tee -a /etc/hosts
-echo "192.168.33.157  dex.samsung.local" | sudo tee -a /etc/hosts
+echo "192.168.33.157  headlamp.dcs.local" | sudo tee -a /etc/hosts
+echo "192.168.33.157  dex.dcs.local" | sudo tee -a /etc/hosts
 ```
 
 ---
@@ -571,7 +571,7 @@ Copyright © 2025 Samsung Kubernetes Platform
                          ▼
               ┌──────────────────────┐
               │  NGINX Gateway Fabric │  LoadBalancer IP: 192.168.33.157
-              │  (TLS Termination)    │  Domain: *.samsung.local
+              │  (TLS Termination)    │  Domain: *.dcs.local
               └──────────┬───────────┘
                          │
          ┌───────────────┼───────────────┐

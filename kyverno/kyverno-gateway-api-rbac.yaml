@@ -12,6 +12,7 @@ rules:
   resources:
   - gateways
   - httproutes
+  - httproutes/status
   - grpcroutes
   - tcproutes
   - tlsroutes

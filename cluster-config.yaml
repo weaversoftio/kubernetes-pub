@@ -16,8 +16,8 @@
 # ========== הגדרות כלליות ==========
 cluster:
   # Domain name for all services (*.domain will be used)
-  # דוגמה: samsung.local, company.local, client.local
-  domain: "samsung.local"
+  # דוגמה: dcs.local, company.local, client.local
+  domain: "dcs.local"
   
   # Kubernetes context (leave empty for current context)
   # אם ריק - ישתמש ב-context הנוכחי
@@ -50,7 +50,7 @@ gateway:
   namespace: "nginx-gateway"
   
   # Gateway name
-  name: "samsung-gateway-fabric"
+  name: "dcs-gateway-fabric"
   
   # LoadBalancer IP for the Gateway
   # חייב להיות בתוך ה-IP range של MetalLB
@@ -63,7 +63,7 @@ gateway:
   chart_version: "1.5.1"
   
   # TLS Certificate secret name
-  tls_secret_name: "samsung-tls-certificate"
+  tls_secret_name: "dcs-tls-certificate"
   
   # 📝 לשינוי ערכים אלה:
   #    ערוך את הקובץ: Gateway-Fabric/gateway.yaml
@@ -94,7 +94,7 @@ kyverno:
   
   # Cluster domain for auto-generated hostnames
   # Format: {service}-{namespace}.{cluster_domain}
-  cluster_domain: "samsung.local"
+  cluster_domain: "dcs.local"
   
   # 📝 לשינוי ערכים אלה:
   #    ערוך את הקבצים:
@@ -109,13 +109,13 @@ headlamp:
   namespace: "headlamp"
   
   # Hostname for Headlamp (without https://)
-  # דוגמה: headlamp.samsung.local
-  hostname: "headlamp.samsung.local"
+  # דוגמה: headlamp.dcs.local
+  hostname: "headlamp.dcs.local"
   
   # Admin user configuration
   admin:
     # Admin user email (used in RBAC)
-    email: "admin@samsung.local"
+    email: "admin@dcs.local"
     
     # Admin service account name
     service_account: "headlamp-admin"

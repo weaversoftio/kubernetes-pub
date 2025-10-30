@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-root-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: cluster-root-ca
+  secretName: cluster-root-ca
+  privateKey:
+    algorithm: RSA
+    size: 4096
+  duration: 87600h
+  renewBefore: 720h
+  issuerRef:
+    name: selfsigned-root
+    kind: Issuer
+
+

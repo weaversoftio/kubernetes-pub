@@ -38,6 +38,12 @@ spec:
   background: true
   rules:
   - name: generate-httproute
+    # Load convention values (cluster name, DNS suffix) from a ConfigMap
+    context:
+    - name: coc
+      configMap:
+        name: kyverno-coc-config
+        namespace: kyverno
     match:
       any:
       - resources:
@@ -69,12 +75,13 @@ spec:
         spec:
           parentRefs:
           # ⚙️ CHANGE THIS: Gateway name and namespace (or leave default)
-          - name: samsung-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
+          - name: dcs-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
             namespace: nginx-gateway       # ← CHANGE THIS LINE (or leave as-is)
             kind: Gateway
           hostnames:
-          # ⚙️ CHANGE THIS: Replace "samsung.local" with your domain
-          - "{{request.object.metadata.name}}-{{request.namespace}}.samsung.local"  # ← CHANGE THIS LINE
+          # ⚙️ Convention: {app}-{namespace}.{clusterName}.{dnsSuffix}
+          # Values are loaded from ConfigMap kyverno/kyverno-coc-config
+          - "{{request.object.metadata.name}}-{{request.namespace}}.{{ coc.data.clusterName }}.{{ coc.data.dnsSuffix }}"
           rules:
           - matches:
             - path:

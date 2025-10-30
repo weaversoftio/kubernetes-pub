@@ -1,0 +1,46 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-certificate-from-httproute
+  annotations:
+    policies.kyverno.io/title: Generate Certificate from HTTPRoute hostnames (optional)
+    policies.kyverno.io/category: Automation, TLS
+    policies.kyverno.io/subject: HTTPRoute, Certificate
+    policies.kyverno.io/description: |
+      Optionally generates a cert-manager Certificate when an HTTPRoute with hostnames is created.
+      Disabled by default via autogen label. Enable by setting the label on the policy to true.
+  labels:
+    tls.automation/enabled: "false"
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+    - name: generate-certificate-per-hostname
+      preconditions:
+        any:
+          - key: "{{`{{ request.object.metadata.labels."tls.automation/enabled" }}`}}"
+            operator: Equals
+            value: "true"
+      match:
+        any:
+          - resources:
+              kinds:
+                - HTTPRoute
+              apiGroups:
+                - gateway.networking.k8s.io
+      generate:
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        name: "{{`{{ request.object.metadata.name }}`}}-tls"
+        namespace: "{{`{{ request.object.metadata.namespace }}`}}"
+        synchronize: true
+        data:
+          spec:
+            secretName: "{{`{{ request.object.metadata.name }}`}}-tls"
+            commonName: "{{`{{ request.object.spec.hostnames[0] }}`}}"
+            dnsNames: "{{`{{ request.object.spec.hostnames }}`}}"
+            issuerRef:
+              name: cluster-ca
+              kind: ClusterIssuer
+
+

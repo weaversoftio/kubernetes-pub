@@ -17,8 +17,10 @@ config:
   oidc:
     clientID: "headlamp"
     clientSecret: "headlamp-secret-change-me"
-    issuerURL: "https://dex.samsung.local"
+    issuerURL: "https://dex.dcs.local"
     scopes: "email,profile,groups"
+    insecureSkipTLSVerify: true
+    redirectURI: "https://headlamp.dcs.local/oidc-callback"
 
 service:
   type: ClusterIP
@@ -36,4 +38,11 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
+
+# Host aliases to resolve dcs.local domains
+hostAliases:
+  - ip: "192.168.33.157"
+    hostnames:
+      - "dex.dcs.local"
+      - "headlamp.dcs.local"
 

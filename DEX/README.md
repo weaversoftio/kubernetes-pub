@@ -156,6 +156,16 @@ kubectl oidc-login setup \
 
 See `kube-apiserver-oidc-patch.yaml` for details.
 
+## 🔐 Login to Headlamp with DEX OIDC
+
+After configuration, Headlamp will show a "Sign in with OIDC" button.
+
+**Login credentials:**
+- **Username:** `admin@dcs.local`
+- **Password:** `admin`
+
+After successful login, Headlamp will use DEX authentication and RBAC will control access based on email.
+
 ## ✅ Verification
 
 ```bash
