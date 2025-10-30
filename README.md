@@ -68,6 +68,18 @@
    192.168.88.55  <YOUR-APP>.dcs.local
    ```
 
+### 🔒 TLS & Wildcard Certificate (HTTPS for Everything)
+
+All exposed services and dashboards use a **single wildcard TLS certificate** (`*.dcs.local`) managed by cert-manager. This certificate is automatically used by the Gateway, providing HTTPS/TLS for every app subdomain (e.g., `headlamp.dcs.local`, `yourapp.dcs.local`).
+
+- Certificate YAML: `Gateway-Fabric/wildcard-certificate.yaml`
+- Secret name (for Gateway reference): `dcs-tls-certificate`
+- Common Name (CN): `*.dcs.local`
+
+**If you change your cluster's domain, update the `commonName` and `dnsNames` fields in this YAML and re-run the installation.**
+
+No need to manage certificates per app—everything is secured out of the box!
+
 > ⚠️ **Trident & DEX:** Skip all configuration, deployment and files for now! The platform doesn’t use them unless enabled in the future.
 
 ---
