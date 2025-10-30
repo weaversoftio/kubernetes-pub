@@ -81,7 +81,7 @@ spec:
           hostnames:
           # ⚙️ Convention: {app}-{namespace}.{clusterName}.{dnsSuffix}
           # Values are loaded from ConfigMap kyverno/kyverno-coc-config
-          - "{{request.object.metadata.name}}-{{request.namespace}}.{{ coc.data.clusterName }}.{{ coc.data.dnsSuffix }}"
+          - "{{request.object.metadata.name}}-{{request.namespace}}.prod.weaversoft.io"  # ← CORRECTED DOMAIN
           rules:
           - matches:
             - path:

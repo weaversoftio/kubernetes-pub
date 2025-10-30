@@ -31,7 +31,7 @@ spec:
     kind: Gateway
   hostnames:
   # ⚙️ CHANGE THIS: Replace with your Headlamp hostname
-  - "headlamp.dcs.local"  # ← CHANGE THIS LINE
+  - "headlamp.prod.weaversoft.io"  # ← CORRECTED DOMAIN
   rules:
   - matches:
     - path:

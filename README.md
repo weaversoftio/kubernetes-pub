@@ -87,7 +87,7 @@ No need to manage certificates per app—everything is secured out of the box!
 ## 🚀 3. Platform Installation (First Time or Upgrade)
 
 - **ALL IN ONE:**
-  ```bash
+```bash
   chmod +x install-all.sh
   ./install-all.sh
   ```
@@ -174,11 +174,11 @@ spec:
 
 - [ ] All relevant YAML files above are edited for your environment/domain/IP
 - [ ] All pods are Running (MetalLB, Gateway Fabric, Kyverno, Headlamp):
-  ```bash
+```bash
   kubectl get pods -A | grep -E 'metallb|nginx-gateway|kyverno|headlamp'
   ```
 - [ ] Gateway (Ingress) service shows assigned external IP:
-  ```bash
+```bash
   kubectl get svc -n nginx-gateway
   ```
 - [ ] /etc/hosts or DNS records include every dashboard/app domain you’ll be testing
@@ -190,31 +190,31 @@ spec:
 
 - Open: [https://headlamp.dcs.local](https://headlamp.dcs.local) (or your configured URL)
 - Get a fresh admin token:
-  ```bash
+```bash
   kubectl get secret -n headlamp -o jsonpath='{.data.token}' \
     $(kubectl get secret -n headlamp | grep headlamp-admin-token | awk '{print $1}') | base64 -d
-  ```
+```
 
 ---
 
 ## 🏆 7. Troubleshooting & Resources
 
 - **Pods won’t run or crash?** Check component logs. Example:
-  ```bash
+```bash
   kubectl logs -n metallb-system -l app=metallb
   kubectl logs -n nginx-gateway -l app.kubernetes.io/instance=nginx-gateway-fabric
   kubectl logs -n kyverno -l app.kubernetes.io/instance=kyverno
-  kubectl logs -n headlamp -l app.kubernetes.io/name=headlamp
-  ```
+kubectl logs -n headlamp -l app.kubernetes.io/name=headlamp
+```
 - **Cannot access via browser?**
   - Double check DNS/hosts and that Gateway service has an external IP
   - Make sure Headlamp pod is running and ready
   - Re-generate the admin token if authentication fails
 - **Component/feature docs:**
-  - [MetalLB/README.md](MetalLB/README.md)
-  - [Gateway-Fabric/README.md](Gateway-Fabric/README.md)
-  - [kyverno/README.md](kyverno/README.md)
-  - [Headlamp/README.md](Headlamp/README.md)
+- [MetalLB/README.md](MetalLB/README.md)
+- [Gateway-Fabric/README.md](Gateway-Fabric/README.md)
+- [kyverno/README.md](kyverno/README.md)
+- [Headlamp/README.md](Headlamp/README.md)
 
 ---
 

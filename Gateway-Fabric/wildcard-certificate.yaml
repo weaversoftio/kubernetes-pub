@@ -5,9 +5,9 @@ metadata:
   namespace: nginx-gateway
 spec:
   secretName: dcs-tls-certificate
-  commonName: "*.dcs.local"
+  commonName: "*.prod.weaversoft.io"
   dnsNames:
-    - "*.dcs.local"
+    - "*.prod.weaversoft.io"
   issuerRef:
     name: cluster-ca
     kind: ClusterIssuer
