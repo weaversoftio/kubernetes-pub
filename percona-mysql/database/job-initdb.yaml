@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: initdb-job
+  namespace: percona-mysql  
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: initdb
+          image: percona/percona-server:8.0
+          command: ["sh", "-c"]
+          args:
+            - |
+              echo "Running initial database setup..."
+              mysql -h percona-db-proxysql -u root -pMySecureRoot123! < /initdb/init.sql
+          volumeMounts:
+            - name: initdb
+              mountPath: /initdb
+      volumes:
+        - name: initdb
+          configMap:
+            name: initdb-sql 

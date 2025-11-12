@@ -1,0 +1,75 @@
+# values-db.yaml — Percona MySQL (PXC) + ProxySQL + Trident + init.sql (ConfigMap external)
+
+crVersion: 1.15.0
+operatorImageRepository: percona/percona-xtradb-cluster-operator
+
+pxc:
+  size: 3
+  image:
+    repository: percona/percona-xtradb-cluster
+    tag: 8.0.36-28.1
+  autoRecovery: true
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+  # אחסון קבוע דרך Trident (NetApp)
+  persistence:
+    enabled: true
+    storageClass: trident-csi
+    accessMode: ReadWriteOnce
+    size: 10Gi
+
+  # שימוש בקובץ init.sql שיוזן ע"י ConfigMap חיצוני
+  configuration: |
+    [mysqld]
+    init-file=/etc/mysql/init/init.sql
+
+  # מיפוי ה-ConfigMap שמכיל את קובץ ה-init.sql
+  sidecarVolumes:
+    - name: initdb
+      configMap:
+        name: initdb-sql  # ← זה השם של ה-ConfigMap שתיצור בהמשך
+  sidecarVolumeMounts:
+    - name: initdb
+      mountPath: /etc/mysql/init
+  sidecarPVCs: []
+  sidecarResources:
+    requests: {}
+    limits: {}
+
+haproxy:
+  enabled: false  # לא נשתמש בו, רק ProxySQL
+
+proxysql:
+  enabled: true
+  size: 2
+  image: "percona/proxysql2:2.5.5"
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    storageClassName: trident-csi
+
+backup:
+  enabled: false
+
+logcollector:
+  enabled: true
+  image: percona/percona-xtradb-cluster-operator:1.15.0-logcollector-fluentbit3.1.4
+
+secrets:
+  passwords:
+    root: MySecureRoot123!
+    xtrabackup: MyBackup123!
+    monitor: Monit0r!
+    clustercheck: Clust3rCheck!
+    proxyadmin: ProxyAdm1n!
+    operator: Operat0r!
+    replication: Repl1ca!
+
