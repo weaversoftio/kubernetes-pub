@@ -1,0 +1,34 @@
+# values-db.yaml
+crVersion: 2.7.0
+repository: docker.io/percona/percona-postgresql-operator
+image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg17.5.2-postgres
+imagePullPolicy: IfNotPresent
+postgresVersion: 17
+
+instances:
+  - name: instance1
+    replicas: 2  # primary + 1 replica
+    dataVolumeClaimSpec:
+      storageClassName: openebs-hostpath  # שימוש ב־OpenEBS
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+
+proxy:
+  pgBouncer:
+    replicas: 2
+    image: docker.io/percona/percona-pgbouncer:1.24.1
+
+backups:
+  enabled: false  # נכבה זמנית כדי לא לסבך את ההתקנה
+
+users:
+  - name: user
+    databases:
+      - mydb
+    options: "SUPERUSER"
+    password:
+      type: ASCII
+    secretName: "user-secret"
