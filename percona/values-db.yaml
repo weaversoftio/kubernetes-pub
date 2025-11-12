@@ -16,6 +16,24 @@ instances:
         requests:
           storage: 5Gi
 
+patroni:
+  bootstrap:
+    dcs:
+      postgresql:
+        parameters:
+          max_connections: 100
+  initContainers: []
+  containers:
+    database:
+      livenessProbe:
+        initialDelaySeconds: 90
+        timeoutSeconds: 15
+        periodSeconds: 30
+      readinessProbe:
+        initialDelaySeconds: 60
+        timeoutSeconds: 10
+        periodSeconds: 20
+
 proxy:
   pgBouncer:
     replicas: 2
@@ -31,4 +49,3 @@ users:
     options: "SUPERUSER"
     password:
       type: ASCII
-    secretName: "user-secret"
