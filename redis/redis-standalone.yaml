@@ -1,0 +1,23 @@
+apiVersion: redis.redis.redis.opstreelabs.in/v1beta1
+kind: Redis
+metadata:
+  name: my-redis
+  namespace: redis
+spec:
+  mode: standalone
+  kubernetesConfig:
+    serviceType: ClusterIP
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+    image: quay.io/opstree/redis:7.2
+  redisConfig:
+    additionalRedisConfig: |
+      requirepass redis123
+  storage:
+    storageClass: openebs-hostpath
+    storageSize: 2Gi
