@@ -1,25 +1,6 @@
 # =====================================================
 # NGINX Gateway Fabric - Gateway Configuration
 # =====================================================
-# 
-# ⚙️ CONFIGURATION REQUIRED - Change the domain below
-# 
-# This file defines the Gateway resource that will route traffic
-# to your services using HTTPRoute resources.
-#
-# 📝 WHAT TO CHANGE:
-#   Line 19: Change "*.samsung.local" to your domain
-#   Line 28: Change "*.samsung.local" to your domain
-#
-# 📋 Examples:
-#   *.yourdomain.com
-#   *.company.local
-#   *.client.internal
-#
-# ⚠️ This domain will be used for ALL services!
-#    Example: headlamp.yourdomain.com, dex.yourdomain.com
-#
-# =====================================================
 
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
