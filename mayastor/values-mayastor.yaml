@@ -1,0 +1,34 @@
+# Disable telemetry
+obs:
+  enabled: false
+
+# Enable CSI for dynamic provisioning
+csi:
+  controller:
+    enabled: true
+  node:
+    enabled: true
+
+# Mayastor control plane
+agents:
+  core:
+    enabled: true
+  ha:
+    enabled: true
+
+etcd:
+  replicaCount: 3
+
+# Enable Mayastor engine
+io_engine:
+  enabled: true
+
+# Enable diskpool operator
+diskpool:
+  enabled: true
+
+# Disable everything NOT needed
+loki:
+  enabled: false
+alloy:
+  enabled: false

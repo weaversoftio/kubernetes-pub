@@ -1,0 +1,40 @@
+# Disable ALL LocalPV engines
+localpv-provisioner:
+  enabled: false
+
+zfs-localpv:
+  enabled: false
+
+lvm-localpv:
+  enabled: false
+
+# Enable Mayastor only
+mayastor:
+  enabled: true
+  csi:
+    node:
+      initContainers:
+        enabled: true
+
+# Required for Mayastor control-plane
+engines:
+  local:
+    lvm:
+      enabled: false
+    zfs:
+      enabled: false
+  replicated:
+    mayastor:
+      enabled: true
+
+# Disable optional components
+loki:
+  enabled: false
+
+alloy:
+  enabled: false
+
+openebs-crds:
+  csi:
+    volumeSnapshots:
+      enabled: true

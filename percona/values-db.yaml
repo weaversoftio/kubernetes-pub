@@ -9,7 +9,7 @@ instances:
   - name: instance1
     replicas: 2  # primary + 1 replica
     dataVolumeClaimSpec:
-      storageClassName: openebs-hostpath  # שימוש ב־OpenEBS
+      storageClassName: mayastor-3rep  # שימוש ב־OpenEBS
       accessModes:
         - ReadWriteOnce
       resources:

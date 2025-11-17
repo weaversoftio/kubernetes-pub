@@ -13,7 +13,7 @@ spec:
   storage:
     volumeClaimTemplate:
       spec:
-        storageClassName: openebs-hostpath
+        storageClassName: mayastor-3rep
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
