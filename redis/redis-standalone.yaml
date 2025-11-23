@@ -8,8 +8,18 @@ spec:
     image: quay.io/opstree/redis:v7.0.12
     imagePullPolicy: IfNotPresent
     resources:
-      requests: { cpu: "100m", memory: "256Mi" }
-      limits:   { cpu: "500m", memory: "512Mi" }
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
   storage:
     volumeClaimTemplate:
       spec:

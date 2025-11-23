@@ -22,6 +22,13 @@ etcd:
 # Enable Mayastor engine
 io_engine:
   enabled: true
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1200m"
+      memory: "512Mi"
 
 # Enable diskpool operator
 diskpool:

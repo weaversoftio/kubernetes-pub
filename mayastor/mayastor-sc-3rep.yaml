@@ -5,8 +5,8 @@ metadata:
 provisioner: io.openebs.csi-mayastor
 allowVolumeExpansion: true
 parameters:
-  repl: "3"               # מספר רפליקות
-  protocol: "nvmf"        # פרוטוקול תקני
-  ioTimeout: "30"         # מומלץ
+  repl: "3"             
+  protocol: "nvmf"        
+  ioTimeout: "30"         
 reclaimPolicy: Delete
 volumeBindingMode: Immediate

@@ -27,12 +27,15 @@ patroni:
     database:
       livenessProbe:
         initialDelaySeconds: 90
-        timeoutSeconds: 15
+        timeoutSeconds: 45
         periodSeconds: 30
+        failureThreshold: 3
+
       readinessProbe:
         initialDelaySeconds: 60
-        timeoutSeconds: 10
+        timeoutSeconds: 30
         periodSeconds: 20
+        failureThreshold: 3
 
 proxy:
   pgBouncer:
@@ -40,7 +43,7 @@ proxy:
     image: docker.io/percona/percona-pgbouncer:1.24.1
 
 backups:
-  enabled: false  # נכבה זמנית כדי לא לסבך את ההתקנה
+  enabled: false  
 
 users:
   - name: user

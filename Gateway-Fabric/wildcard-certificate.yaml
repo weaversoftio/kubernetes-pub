@@ -1,10 +1,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dcs-wildcard-cert
+  name: wildcard-cert
   namespace: nginx-gateway
 spec:
-  secretName: dcs-tls-certificate
+  secretName: tls-certificate
   commonName: "*.prod.weaversoft.io"
   dnsNames:
     - "*.prod.weaversoft.io"
