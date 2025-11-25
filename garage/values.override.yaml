@@ -1,0 +1,30 @@
+# ===========================================
+#  Garage – platform-optimized deployment
+# ===========================================
+
+# שמירת הנתונים (meta + data) ב-Mayastor
+persistence:
+  meta:
+    storageClass: "mayastor-3rep"
+    size: "2Gi"
+  data:
+    storageClass: "mayastor-3rep"
+    size: "10Gi"
+
+# מספר הרפליקות (עפ"י גודל הקלאסטר שלך)
+deployment:
+  replicaCount: 2
+
+garage:
+  replicationFactor: 2
+
+# הפעלת nodeSelector + tolerations לפלטפורמה שלך
+nodeSelector:
+  dedicated: tools
+  node-type: tools
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "tools"
+    effect: "NoSchedule"

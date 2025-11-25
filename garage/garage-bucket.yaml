@@ -1,0 +1,11 @@
+apiVersion: garage.deuxfleurs.fr/v1alpha1
+kind: GarageBucket
+metadata:
+  name: my-app-storage
+  namespace: platform
+spec:
+  bucketName: "my-app-storage"
+  versioning: false
+  anonymousAccess: false
+  lifecycle:
+    delete: true
