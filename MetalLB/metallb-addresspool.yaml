@@ -1,30 +1,13 @@
 # =====================================================
 # MetalLB IP Address Pool Configuration
 # =====================================================
-# 
-# ⚙️ CONFIGURATION REQUIRED - Change the IP range below
-# 
-# This file defines the IP address pool that MetalLB will use
-# to assign external IPs to LoadBalancer services.
-#
-# 📝 WHAT TO CHANGE:
-#   Line 8: Change the IP range to match your network
-#
-# 📋 Format: START_IP-END_IP
-#    Example: 192.168.1.100-192.168.1.200
-#
-# ⚠️ Make sure this IP range:
-#   - Is available on your network
-#   - Has enough IPs for your services
-#   - Doesn't conflict with existing IPs
-#
-# =====================================================
+
 
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: dcs-pool
-  namespace: metallb-system
+  name: weaverai-pool
+  namespace: platform
 spec:
   addresses:
     # ⚙️ CHANGE THIS: Replace with your network's IP range
@@ -33,8 +16,8 @@ spec:
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
-  name: dcs-l2
-  namespace: metallb-system
+  name: weaverai-l2
+  namespace: platform
 spec:
   ipAddressPools:
-    - dcs-pool
+    - weaverai-pool

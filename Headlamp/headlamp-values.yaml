@@ -13,8 +13,8 @@ serviceAccount:
 
 # Headlamp arguments
 extraArgs:
-  - -in-cluster
-  - -base-url=/
+  - --in-cluster
+  - --base-url=/
 
 env:
   - name: PUBLIC_URL
@@ -37,3 +37,13 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
+
+    
+nodeSelector:
+  dedicated: tools
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "tools"
+    effect: "NoSchedule"

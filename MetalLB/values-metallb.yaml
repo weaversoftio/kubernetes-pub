@@ -1,0 +1,17 @@
+controller:
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+  nodeSelector:
+    dedicated: tools
+
+speaker:
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+  nodeSelector:
+    dedicated: tools

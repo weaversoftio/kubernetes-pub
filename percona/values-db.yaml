@@ -5,9 +5,27 @@ image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg17.5.2-postgres
 imagePullPolicy: IfNotPresent
 postgresVersion: 17
 
+nodeSelector:
+  dedicated: tools
+  node-type: tools
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: tools
+    effect: NoSchedule
+
 instances:
   - name: instance1
     replicas: 2  # primary + 1 replica
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
     dataVolumeClaimSpec:
       storageClassName: mayastor-3rep  # שימוש ב־OpenEBS
       accessModes:
@@ -41,6 +59,14 @@ proxy:
   pgBouncer:
     replicas: 2
     image: docker.io/percona/percona-pgbouncer:1.24.1
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
 
 backups:
   enabled: false  

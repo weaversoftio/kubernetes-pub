@@ -5,10 +5,20 @@ operatorImageRepository: docker.io/percona/percona-postgresql-operator
 imagePullPolicy: IfNotPresent
 
 # נעקוב רק אחרי הניימספייס שלנו
-watchNamespace: "percona-postgres"
+watchNamespace: "platform"
 
 # לא לעקוב אחרי כל הקלאסטר
 watchAllNamespaces: false
+
+nodeSelector:
+  dedicated: tools
+  node-type: tools
+
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: tools
+    effect: NoSchedule
 
 resources:
   limits:

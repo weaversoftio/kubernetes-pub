@@ -2,7 +2,7 @@ apiVersion: openebs.io/v1beta3
 kind: DiskPool
 metadata:
   name: pool-worker1
-  namespace: mayastor
+  namespace: platform
 spec:
   node: k8s-worker1
   disks:
@@ -12,7 +12,7 @@ apiVersion: openebs.io/v1beta3
 kind: DiskPool
 metadata:
   name: pool-worker2
-  namespace: mayastor
+  namespace: platform
 spec:
   node: k8s-worker2
   disks:
@@ -22,7 +22,7 @@ apiVersion: openebs.io/v1beta3
 kind: DiskPool
 metadata:
   name: pool-worker3
-  namespace: mayastor
+  namespace: platform
 spec:
   node: worker3
   disks:

@@ -60,8 +60,8 @@ spec:
         spec:
           parentRefs:
           # ⚙️ CHANGE THIS: Gateway name and namespace (or leave default)
-          - name: dcs-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
-            namespace: nginx-gateway       # ← CHANGE THIS LINE (or leave as-is)
+          - name: weaverai-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
+            namespace: platform       # ← CHANGE THIS LINE (or leave as-is)
             kind: Gateway
           hostnames:
           - "{{request.object.metadata.name}}-{{request.namespace}}.prod.weaversoft.io"  # ← CORRECTED DOMAIN

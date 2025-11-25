@@ -5,8 +5,8 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: dcs-gateway-fabric
-  namespace: nginx-gateway
+  name: weaverai-gateway-fabric
+  namespace: platform
 spec:
   gatewayClassName: nginx
   listeners:
@@ -28,7 +28,7 @@ spec:
       mode: Terminate
       certificateRefs:
       - kind: Secret
-        name: dcs-tls-certificate
+        name: tls-certificate
     allowedRoutes:
       namespaces:
         from: All

@@ -4,6 +4,13 @@
 # Admission Controller - handles validate, mutate, and generate rules
 admissionController:
   replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
   
   # Enable webhooks for different rule types
   webhooks:
@@ -18,14 +25,35 @@ admissionController:
 # Background Controller - processes existing resources
 backgroundController:
   replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
   
 # Cleanup Controller - handles cleanup policies
 cleanupController:
   replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
 
 # Reports Controller - generates policy reports  
 reportsController:
   replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
 
 # Features configuration
 features:

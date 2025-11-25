@@ -26,6 +26,15 @@ nginxGateway:
       cpu: 500m
       memory: 512Mi
 
+  nodeSelector:
+    dedicated: tools
+
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+
 # NGINX (data plane) configuration
 nginx:
   image:

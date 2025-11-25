@@ -1,27 +1,114 @@
-# Disable telemetry
+# ===============================
+#  Mayastor – Clean Production Values
+#  Runs ONLY on nodes with: dedicated=tools
+# ===============================
+
+# Disable telemetry + callhome
 obs:
   enabled: false
+  callhome:
+    enabled: false
+  stats:
+    enabled: false
 
-# Enable CSI for dynamic provisioning
+# Disable observability
+loki:
+  enabled: false
+alloy:
+  enabled: false
+
+# Disable eventing/NATS
+eventing:
+  enabled: false
+nats:
+  nats:
+    jetstream:
+      enabled: false
+
+# global override (important) – restrict all components to tools-only nodes
+nodeSelector:
+  dedicated: tools
+  node-type: tools
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: tools
+    effect: NoSchedule
+
+# --------------------------------
+# CSI Controller + Node
+# --------------------------------
 csi:
   controller:
-    enabled: true
-  node:
-    enabled: true
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
 
-# Mayastor control plane
+  node:
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+# --------------------------------
+# Agents (core + HA)
+# --------------------------------
 agents:
   core:
-    enabled: true
-  ha:
-    enabled: true
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
 
+  ha:
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+# --------------------------------
+# ETCD – 3 replicas
+# --------------------------------
 etcd:
   replicaCount: 3
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
 
-# Enable Mayastor engine
+# --------------------------------
+# IO-ENGINE
+# --------------------------------
 io_engine:
-  enabled: true
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
   resources:
     requests:
       cpu: "500m"
@@ -30,12 +117,41 @@ io_engine:
       cpu: "1200m"
       memory: "512Mi"
 
-# Enable diskpool operator
+# --------------------------------
+# Diskpool Operator
+# --------------------------------
 diskpool:
-  enabled: true
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
 
-# Disable everything NOT needed
-loki:
-  enabled: false
-alloy:
-  enabled: false
+# --------------------------------
+# REST API
+# --------------------------------
+rest:
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
+
+# --------------------------------
+# LOCAL PV PROVISIONER
+# --------------------------------
+localpvProvisioner:
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule

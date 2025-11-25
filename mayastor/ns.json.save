@@ -1,0 +1,57 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "creationTimestamp": "2025-11-12T09:13:14Z",
+        "deletionTimestamp": "2025-11-23T16:11:09Z",
+        "labels": {
+            "kubernetes.io/metadata.name": "percona-postgres"
+        },
+        "name": "percona-postgres",
+        "resourceVersion": "32810334",
+        "uid": "a6f704db-d0ff-4105-8733-7c417e1a88e1"
+    },
+    "spec": {
+        "finalizers":  ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastTransitionTime": "2025-11-23T16:11:17Z",
+                "message": "All resources successfully discovered",
+                "reason": "ResourcesDiscovered",
+                "status": "False",
+                "type": "NamespaceDeletionDiscoveryFailure"
+            },
+            {
+                "lastTransitionTime": "2025-11-23T16:11:17Z",
+                "message": "All legacy kube types successfully parsed",
+                "reason": "ParsedGroupVersions",
+                "status": "False",
+                "type": "NamespaceDeletionGroupVersionParsingFailure"
+            },
+            {
+                "lastTransitionTime": "2025-11-23T16:11:17Z",
+                "message": "All content successfully deleted, may be waiting on finalization",
+                "reason": "ContentDeleted",
+                "status": "False",
+                "type": "NamespaceDeletionContentFailure"
+            },
+            {
+                "lastTransitionTime": "2025-11-23T16:11:17Z",
+                "message": "Some resources are remaining: postgresclusters.postgres-operator.crunchydata.com has 1 resource instances",
+                "reason": "SomeResourcesRemain",
+                "status": "True",
+                "type": "NamespaceContentRemaining"
+            },
+            {
+                "lastTransitionTime": "2025-11-23T16:11:17Z",
+                "message": "Some content in the namespace has finalizers remaining: postgres-operator.crunchydata.com/finalizer in 1 resource instances",
+                "reason": "SomeFinalizersRemain",
+                "status": "True",
+                "type": "NamespaceFinalizersRemaining"
+            }
+        ],
+        "phase": "Terminating"
+    }
+}

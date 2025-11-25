@@ -1,0 +1,115 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  annotations:
+    current-primary: my-db-pg-db
+    meta.helm.sh/release-name: my-db
+    meta.helm.sh/release-namespace: platform
+    postgres-operator.crunchydata.com/autoCreateUserSchema: "true"
+    postgres-operator.crunchydata.com/patroni-version: 4.0.5
+  labels:
+    app.kubernetes.io/instance: my-db
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: pg-db
+    app.kubernetes.io/version: 2.7.0
+    crunchy-pgha-scope: my-db-pg-db
+    deployment-name: my-db-pg-db
+    helm.sh/chart: pg-db-2.7.0
+    name: my-db-pg-db
+    pg-cluster: my-db-pg-db
+    pgo-version: 2.7.0
+    pgouser: admin
+    pgv2.percona.com/version: 2.7.0
+  name: my-db-pg-db
+  namespace: platform
+spec:
+  backups:
+    pgbackrest: {}
+
+  config: {}
+
+  extensions:
+    pgAudit: true
+    pgStatMonitor: true
+
+  image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg17.5.2-postgres
+  imagePullPolicy: IfNotPresent
+
+  postgresVersion: 17
+  port: 5432
+  paused: false
+  openshift: false
+
+  # =====================================================
+  # INSTANCE BLOCK — WORKLOAD DB NODES
+  # =====================================================
+  instances:
+    - name: instance1
+      replicas: 2
+
+      dataVolumeClaimSpec:
+        storageClassName: mayastor-3rep
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+
+      # Run ONLY on dedicated=tools nodes
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dedicated
+                operator: In
+                values: ["tools"]
+
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: tools
+          effect: NoSchedule
+
+  # =====================================================
+  # PGBOUNCER BLOCK
+  # =====================================================
+  proxy:
+    pgBouncer:
+      image: docker.io/percona/percona-pgbouncer:1.24.1
+      replicas: 2
+      exposeSuperusers: true
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  postgres-operator.crunchydata.com/role: pgbouncer
+              topologyKey: kubernetes.io/hostname
+
+        # Force pgbouncer to run only on tools nodes
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: dedicated
+                operator: In
+                values: ["tools"]
+
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: tools
+          effect: NoSchedule
+
+  standby:
+    enabled: false
+
+  users:
+    - name: user
+      options: SUPERUSER
+      databases: ["mydb"]
+      password:
+        type: ASCII

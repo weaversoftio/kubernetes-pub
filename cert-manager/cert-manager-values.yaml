@@ -1,10 +1,5 @@
-installCRDs: true
-image:
-  tag: v0.14.0
-
 nodeSelector:
   dedicated: tools
-  node-type: tools
 
 tolerations:
   - key: "dedicated"

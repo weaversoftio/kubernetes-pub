@@ -2,25 +2,18 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: enforce-cluster-ca-for-certificates
-  annotations:
-    policies.kyverno.io/title: Enforce Cluster CA for cert-manager Certificates
-    policies.kyverno.io/category: Security, TLS
-    policies.kyverno.io/subject: Certificate, cert-manager
-    policies.kyverno.io/description: |
-      Ensures all cert-manager Certificates are issued by the central ClusterIssuer "cluster-ca".
-      Prevents creating additional CAs outside the managed Root CA.
 spec:
   validationFailureAction: enforce
   background: true
   rules:
+
+    # Rule 1: require all certificates to use cluster-ca
     - name: require-cluster-ca-issuer
       match:
         any:
           - resources:
               kinds:
                 - Certificate
-              apiGroups:
-                - cert-manager.io
       validate:
         message: Certificates must use issuerRef.name=cluster-ca and issuerRef.kind=ClusterIssuer
         pattern:
@@ -28,21 +21,21 @@ spec:
             issuerRef:
               name: cluster-ca
               kind: ClusterIssuer
+
+    # Rule 2: block creation of new root CAs anywhere except cert-manager namespace
     - name: block-new-root-cas-outside-cert-manager
       match:
         any:
           - resources:
               kinds:
                 - Certificate
-              apiGroups:
-                - cert-manager.io
       exclude:
         any:
           - resources:
-              namespaces:
-                - cert-manager
               names:
                 - cluster-root-ca
+              namespaces:
+                - cert-manager
       validate:
         message: Creating additional CA Certificates is not allowed. Use the central Root CA.
         deny:
@@ -51,5 +44,3 @@ spec:
               - key: "{{ request.object.spec.isCA }}"
                 operator: Equals
                 value: true
-
-
