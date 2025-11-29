@@ -1,0 +1,156 @@
+# ===============================
+#  Mayastor – Clean Production Values
+#  Runs ONLY on nodes with: dedicated=tools
+# ===============================
+
+# Disable telemetry + callhome
+obs:
+  enabled: false
+  callhome:
+    enabled: false
+  stats:
+    enabled: false
+
+# Disable observability
+loki:
+  enabled: false
+alloy:
+  enabled: false
+
+# Disable eventing/NATS
+eventing:
+  enabled: false
+nats:
+  nats:
+    jetstream:
+      enabled: false
+
+# global override (important) – restrict all components to tools-only nodes
+# nodeSelector:
+#   dedicated: tools
+#   node-type: tools
+# tolerations:
+#   - key: dedicated
+#     operator: Equal
+#     value: tools
+#     effect: NoSchedule
+
+# --------------------------------
+# CSI Controller + Node
+# --------------------------------
+csi:
+  controller:
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+  node:
+    # CSI node driver runs on all workers (no nodeSelector) to mount volumes on app workers
+    nodeSelector: {}
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+# --------------------------------
+# Agents (core + HA)
+# --------------------------------
+agents:
+  core:
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+  ha:
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+# --------------------------------
+# ETCD – 3 replicas
+# --------------------------------
+etcd:
+  replicaCount: 3
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
+
+# --------------------------------
+# IO-ENGINE
+# --------------------------------
+io_engine:
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1200m"
+      memory: "512Mi"
+
+# --------------------------------
+# Diskpool Operator
+# --------------------------------
+diskpool:
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
+
+# --------------------------------
+# REST API
+# --------------------------------
+rest:
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule
+
+# --------------------------------
+# LOCAL PV PROVISIONER
+# --------------------------------
+localpvProvisioner:
+  nodeSelector:
+    dedicated: tools
+    node-type: tools
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: tools
+      effect: NoSchedule

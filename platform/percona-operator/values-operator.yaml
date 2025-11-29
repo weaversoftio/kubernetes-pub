@@ -1,0 +1,32 @@
+# values-operator.yaml
+replicaCount: 1
+
+operatorImageRepository: docker.io/percona/percona-postgresql-operator
+imagePullPolicy: IfNotPresent
+
+# נעקוב רק אחרי הניימספייס שלנו
+watchNamespace: "platform"
+
+# לא לעקוב אחרי כל הקלאסטר
+watchAllNamespaces: false
+
+nodeSelector:
+  dedicated: tools
+  node-type: tools
+
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: tools
+    effect: NoSchedule
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+disableTelemetry: true
+logLevel: "INFO"

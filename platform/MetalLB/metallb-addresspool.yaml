@@ -1,0 +1,23 @@
+# =====================================================
+# MetalLB IP Address Pool Configuration
+# =====================================================
+
+
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: weaverai-pool
+  namespace: platform
+spec:
+  addresses:
+    # ⚙️ CHANGE THIS: Replace with your network's IP range
+    - 192.168.33.154-192.168.33.160  # ← CHANGE THIS LINE
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: weaverai-l2
+  namespace: platform
+spec:
+  ipAddressPools:
+    - weaverai-pool

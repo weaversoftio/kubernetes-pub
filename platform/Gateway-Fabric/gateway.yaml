@@ -1,0 +1,35 @@
+# =====================================================
+# NGINX Gateway Fabric - Gateway Configuration
+# =====================================================
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: weaverai-gateway-fabric
+  namespace: platform
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    # ⚙️ CHANGE THIS: Replace with your domain
+    hostname: "*.prod.weaversoft.io"  # ← CORRECTED DOMAIN
+    allowedRoutes:
+      namespaces:
+        from: All
+  # HTTPS listener with TLS certificate
+  - name: https
+    protocol: HTTPS
+    port: 443
+    # ⚙️ CHANGE THIS: Replace with your domain (must match line 19)
+    hostname: "*.prod.weaversoft.io"  # ← CORRECTED DOMAIN
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: tls-certificate
+    allowedRoutes:
+      namespaces:
+        from: All
+

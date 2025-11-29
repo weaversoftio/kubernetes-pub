@@ -1,0 +1,83 @@
+# =====================================================
+# Kyverno: Auto-Generate HTTPRoute from Service
+# =====================================================
+
+
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-httproute-from-service
+  annotations:
+    policies.kyverno.io/title: Auto-Generate HTTPRoute from Service
+    policies.kyverno.io/category: Convention over Configuration
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: |
+      Automatically generates HTTPRoute for Services with annotation 'expose: "true"'.
+      This implements Convention over Configuration (CoC) by creating ingress rules
+      based on naming conventions: {service-name}-{namespace}.{cluster-name}.dns.local
+      
+      Usage:
+        Add annotation to Service: expose: "true"
+        HTTPRoute will be auto-generated with hostname based on naming convention.
+spec:
+  background: true
+  rules:
+  - name: generate-httproute
+    # Load convention values (cluster name, DNS suffix) from a ConfigMap
+    context:
+    - name: coc
+      configMap:
+        name: kyverno-coc-config
+        namespace: kyverno
+    match:
+      any:
+      - resources:
+          kinds:
+          - Service
+          annotations:
+            expose: "true"
+      - resources:
+          kinds:
+          - Service
+          selector:
+            matchLabels:
+              expose: "true"
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kube-system
+          - kube-public
+          - kube-node-lease
+    generate:
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      name: "{{request.object.metadata.name}}-route"
+      namespace: "{{request.namespace}}"
+      synchronize: true
+      data:
+        metadata:
+          labels:
+            app: "{{request.object.metadata.name}}"
+            managed-by: kyverno
+            auto-generated: "true"
+          annotations:
+            kyverno.io/generated-by: generate-httproute-from-service
+        spec:
+          parentRefs:
+          # ⚙️ CHANGE THIS: Gateway name and namespace (or leave default)
+          - name: weaverai-gateway-fabric  # ← CHANGE THIS LINE (or leave as-is)
+            namespace: platform       # ← CHANGE THIS LINE (or leave as-is)
+            kind: Gateway
+          hostnames:
+          - "{{request.object.metadata.name}}-{{request.namespace}}.prod.weaversoft.io"  # ← CORRECTED DOMAIN
+          rules:
+          - matches:
+            - path:
+                type: PathPrefix
+                value: /
+            backendRefs:
+            - name: "{{request.object.metadata.name}}"
+              port: "{{ request.object.spec.ports[0].targetPort}}"
+
+

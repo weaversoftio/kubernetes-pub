@@ -1,0 +1,43 @@
+# =====================================================
+# Headlamp HTTPRoute Configuration
+# =====================================================
+# 
+# ⚙️ CONFIGURATION REQUIRED - Change the hostname below
+# 
+# This file defines how to access Headlamp through the Gateway.
+#
+# 📝 WHAT TO CHANGE:
+#   Line 19: Change "headlamp.samsung.local" to match your domain
+#
+# 📋 Examples:
+#   headlamp.yourdomain.com
+#   dashboard.company.local
+#   kubernetes.client.internal
+#
+# ⚠️ This hostname will be used to access the Headlamp dashboard!
+#    Example: https://headlamp.yourdomain.com
+#
+# =====================================================
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: headlamp-route-fabric
+  namespace: platform
+spec:
+  parentRefs:
+  - name: weaverai-gateway-fabric
+    namespace: platform
+    kind: Gateway
+  hostnames:
+  # ⚙️ CHANGE THIS: Replace with your Headlamp hostname (install.sh will substitute if provided)
+  - "headlamp.prod.weaversoft.io"  # default, replaced by install script when needed
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: headlamp
+      port: 80
+

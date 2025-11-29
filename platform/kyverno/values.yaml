@@ -1,0 +1,89 @@
+# Kyverno Helm Values
+# Clean configuration for controllers on tools node,
+# hooks/jobs without nodeSelector (so they don't get stuck).
+
+admissionController:
+  replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+
+  webhooks:
+    resource:
+      enabled: true
+    policy:
+      enabled: true
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - kube-public
+            - kube-node-lease
+            # שים לב — platform *לא מופיע פה* כדי שהפוליסי יעבוד עליו!
+
+backgroundController:
+  replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+
+cleanupController:
+  replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+
+reportsController:
+  replicas: 1
+  nodeSelector:
+    dedicated: tools
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "tools"
+      effect: "NoSchedule"
+
+# Hook Jobs must NOT inherit nodeSelector!
+cleanupJobs:
+  nodeSelector: {}
+  tolerations: []
+
+reportsClean:
+  nodeSelector: {}
+  tolerations: []
+
+scaleToZero:
+  nodeSelector: {}
+  tolerations: []
+
+features:
+  generateValidatingAdmissionPolicy:
+    enabled: false
+  policyExceptions:
+    enabled: true
+  backgroundScan:
+    enabled: true
+    backgroundScanInterval: "1h"
+
+webhooksCleanup:
+  enabled: true
+
+initContainer:
+  generateCerts: true
+
+webhook:
+  generateSelfSignedCert: true

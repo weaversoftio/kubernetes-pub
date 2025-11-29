@@ -1,0 +1,80 @@
+# values-db.yaml
+crVersion: 2.7.0
+repository: docker.io/percona/percona-postgresql-operator
+image: docker.io/percona/percona-postgresql-operator:2.7.0-ppg17.5.2-postgres
+imagePullPolicy: IfNotPresent
+postgresVersion: 17
+
+nodeSelector:
+  dedicated: tools
+  node-type: tools
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: tools
+    effect: NoSchedule
+
+instances:
+  - name: instance1
+    replicas: 2  # primary + 1 replica
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+    dataVolumeClaimSpec:
+      storageClassName: mayastor-3rep  # שימוש ב־OpenEBS
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+
+patroni:
+  bootstrap:
+    dcs:
+      postgresql:
+        parameters:
+          max_connections: 100
+  initContainers: []
+  containers:
+    database:
+      livenessProbe:
+        initialDelaySeconds: 90
+        timeoutSeconds: 45
+        periodSeconds: 30
+        failureThreshold: 3
+
+      readinessProbe:
+        initialDelaySeconds: 60
+        timeoutSeconds: 30
+        periodSeconds: 20
+        failureThreshold: 3
+
+proxy:
+  pgBouncer:
+    replicas: 2
+    image: docker.io/percona/percona-pgbouncer:1.24.1
+    nodeSelector:
+      dedicated: tools
+      node-type: tools
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: tools
+        effect: NoSchedule
+
+backups:
+  enabled: false  
+
+users:
+  - name: user
+    databases:
+      - mydb
+    options: "SUPERUSER"
+    password:
+      type: ASCII

@@ -1,0 +1,32 @@
+# ===========================================
+#  Garage – platform-optimized deployment
+# ===========================================
+
+commonLabels: 
+  app.kubernetes.io/part-of: storage
+  expose: "true"            
+
+persistence:
+  meta:
+    # storageClass: "mayastor-3rep-wait"
+    size: "2Gi"
+  data:
+    # storageClass: "mayastor-3rep-wait"
+    size: "10Gi"
+
+deployment:
+  replicaCount: 1
+
+garage:
+  replicationFactor: 1
+  kubernetesSkipCrd: true
+
+# nodeSelector:
+#   dedicated: tools
+#   node-type: tools
+
+# tolerations:
+#   - key: "dedicated"
+#     operator: "Equal"
+#     value: "tools"
+#     effect: "NoSchedule"

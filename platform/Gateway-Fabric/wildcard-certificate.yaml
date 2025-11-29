@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-cert
+  namespace: platform
+spec:
+  secretName: tls-certificate
+  commonName: "*.prod.weaversoft.io"
+  dnsNames:
+    - "*.prod.weaversoft.io"
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+
+

@@ -1,0 +1,8 @@
+nodeSelector:
+  dedicated: tools
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "tools"
+    effect: "NoSchedule"
