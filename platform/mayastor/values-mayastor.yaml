@@ -26,14 +26,14 @@ nats:
       enabled: false
 
 # global override (important) – restrict all components to tools-only nodes
-nodeSelector:
-  dedicated: tools
-  node-type: tools
-tolerations:
-  - key: dedicated
-    operator: Equal
-    value: tools
-    effect: NoSchedule
+# nodeSelector:
+#   dedicated: tools
+#   node-type: tools
+# tolerations:
+#   - key: dedicated
+#     operator: Equal
+#     value: tools
+#     effect: NoSchedule
 
 # --------------------------------
 # CSI Controller + Node
@@ -50,9 +50,8 @@ csi:
         effect: NoSchedule
 
   node:
-    nodeSelector:
-      dedicated: tools
-      node-type: tools
+    # CSI node driver runs on all workers (no nodeSelector) to mount volumes on app workers
+    nodeSelector: {}
     tolerations:
       - key: dedicated
         operator: Equal

@@ -1,7 +1,7 @@
 # Kyverno Helm Values
-# Enables Convention over Configuration (CoC) features
+# Clean configuration for controllers on tools node,
+# hooks/jobs without nodeSelector (so they don't get stuck).
 
-# Admission Controller - handles validate, mutate, and generate rules
 admissionController:
   replicas: 1
   nodeSelector:
@@ -11,18 +11,22 @@ admissionController:
       operator: "Equal"
       value: "tools"
       effect: "NoSchedule"
-  
-  # Enable webhooks for different rule types
+
   webhooks:
-    # Resource webhook - handles generate and mutate-existing rules
     resource:
       enabled: true
-    
-    # Policy webhook - validates policies
     policy:
       enabled: true
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - kube-public
+            - kube-node-lease
+            # שים לב — platform *לא מופיע פה* כדי שהפוליסי יעבוד עליו!
 
-# Background Controller - processes existing resources
 backgroundController:
   replicas: 1
   nodeSelector:
@@ -32,8 +36,7 @@ backgroundController:
       operator: "Equal"
       value: "tools"
       effect: "NoSchedule"
-  
-# Cleanup Controller - handles cleanup policies
+
 cleanupController:
   replicas: 1
   nodeSelector:
@@ -44,7 +47,6 @@ cleanupController:
       value: "tools"
       effect: "NoSchedule"
 
-# Reports Controller - generates policy reports  
 reportsController:
   replicas: 1
   nodeSelector:
@@ -55,30 +57,33 @@ reportsController:
       value: "tools"
       effect: "NoSchedule"
 
-# Features configuration
+# Hook Jobs must NOT inherit nodeSelector!
+cleanupJobs:
+  nodeSelector: {}
+  tolerations: []
+
+reportsClean:
+  nodeSelector: {}
+  tolerations: []
+
+scaleToZero:
+  nodeSelector: {}
+  tolerations: []
+
 features:
-  # Enable generate rules (required for auto-creating HTTPRoutes)
   generateValidatingAdmissionPolicy:
-    enabled: false  # We use regular webhooks
-  
-  # Enable policy exceptions
+    enabled: false
   policyExceptions:
     enabled: true
-    
-  # Enable background scanning
   backgroundScan:
     enabled: true
     backgroundScanInterval: "1h"
 
-# Webhook configuration
 webhooksCleanup:
   enabled: true
 
-# Generate self-signed TLS certificates for webhooks
-generatecontrollerExtraResources: []
 initContainer:
   generateCerts: true
 
 webhook:
   generateSelfSignedCert: true
-

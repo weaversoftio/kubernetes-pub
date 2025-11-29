@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvme-tcp-module-loader
+spec:
+  selector:
+    matchLabels:
+      name: nvme-tcp-module-loader
+  template:
+    metadata:
+      labels:
+        name: nvme-tcp-module-loader
+    spec:
+      hostNetwork: true
+      hostPID: true
+      containers:
+      - name: modprobe
+        image: busybox:latest
+        securityContext:
+          privileged: true
+        command:
+        - sh
+        - -c
+        - |
+          modprobe nvme_tcp || true
+          # Keep container running to maintain the module
+          while true; do sleep 3600; done
+        volumeMounts:
+        - name: modules
+          mountPath: /lib/modules
+          readOnly: true
+        - name: sys
+          mountPath: /sys
+      volumes:
+      - name: modules
+        hostPath:
+          path: /lib/modules
+      - name: sys
+        hostPath:
+          path: /sys
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+

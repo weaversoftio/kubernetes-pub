@@ -36,6 +36,12 @@ spec:
           - Service
           annotations:
             expose: "true"
+      - resources:
+          kinds:
+          - Service
+          selector:
+            matchLabels:
+              expose: "true"
     exclude:
       any:
       - resources:
