@@ -1,5 +1,4 @@
 # Headlamp Helm Values
-# Samsung Kubernetes Platform
 # Using Gateway API (HTTPRoute) for routing - not Ingress
 
 replicaCount: 1

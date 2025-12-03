@@ -1,6 +1,4 @@
 # NGINX Gateway Fabric - Values Configuration
-# Samsung Kubernetes Platform
-
 nginxGateway:
   # GatewayClass name
   gatewayClassName: nginx
@@ -26,22 +24,13 @@ nginxGateway:
       cpu: 500m
       memory: 512Mi
 
-  nodeSelector:
-    dedicated: tools
-
-  tolerations:
-    - key: "dedicated"
-      operator: "Equal"
-      value: "tools"
-      effect: "NoSchedule"
-
 # NGINX (data plane) configuration
 nginx:
   image:
     repository: ghcr.io/nginxinc/nginx-gateway-fabric/nginx
     tag: 1.5.1
     pullPolicy: IfNotPresent
-
+  
 # Service configuration
 service:
   type: LoadBalancer

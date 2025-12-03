@@ -70,7 +70,7 @@ spec:
             namespace: platform       # ← CHANGE THIS LINE (or leave as-is)
             kind: Gateway
           hostnames:
-          - "{{request.object.metadata.name}}-{{request.namespace}}.prod.weaversoft.io"  # ← CORRECTED DOMAIN
+          - "{{request.object.metadata.name}}-{{request.namespace}}.app.weaversoft.io"  # ← CORRECTED DOMAIN
           rules:
           - matches:
             - path:
